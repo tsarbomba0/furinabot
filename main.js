@@ -1,10 +1,14 @@
 const config = require('./config.json')
-const { Client, Events, GatewayIntentBits, SlashCommandBuilder, Collection, EmbedBuilder } = require('discord.js');
+const ytdl = require("@distube/ytdl-core")
+const { Client, Events, GatewayIntentBits, SlashCommandBuilder, Collection, EmbedBuilder, } = require('discord.js');
+const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection } = require("@discordjs/voice")
 const prefix="&"
+const player = createAudioPlayer();
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates
 ]})
 
 client.once(Events.ClientReady, cl => {
@@ -21,8 +25,6 @@ client.on("messageCreate", (msg) =>{
         } else {
             if (commandargs[0] == "furina"){
                 var unholy_link = "https://rule34.xxx/index.php?page=post&s=list&tags=furina_%28genshin_impact%29+yuri+-ai_generated+-smelly+-video+-fart+-bloated"
-                
-                
                 var func = async () => {
                     var resp = await fetch(unholy_link);
                     var resptext = await resp.text();
@@ -41,17 +43,13 @@ client.on("messageCreate", (msg) =>{
                         }
                         
                     }
-                    
-                    
                     count = count/2
-
                     i=0
                     while (i != count+1){
                         link_array.push(`${unholy_link}&pid=${i*pidnum}`)
                         i++;
                     }
                     link_array.shift()
-
                     for (a in link_array){
                         var resp = await fetch(link_array[a]);
                         var resptext = await resp.text();
@@ -72,14 +70,34 @@ client.on("messageCreate", (msg) =>{
                     .setImage(`${chosenimage}`)
 
                     msg.channel.send({ embeds: [Embed]})
-
                 };
                 func();
+            
+        } else if(commandargs[0] == "play"){
+            const connection = joinVoiceChannel({
+                channelId: msg.member.voice.channel.id,
+                guildId: msg.channel.guild.id,
+                adapterCreator: msg.channel.guild.voiceAdapterCreator,
+            }).subscribe(player)
+            const video = ytdl("https://www.youtube.com/watch?v=ARJ42c_Yl14", { filter: "audioonly"})
+            const music = createAudioResource(video)
+            player.play(music)
+            } else if(commandargs[0] == "stop"){
+                if(!player){console.log("No player!")} else {
+                    player.stop();
+                }
+            } else if(commandargs[0] == "disconnect"){
+                    try {
+                        getVoiceConnection(msg.member.guild.id).destroy();
+                    } catch (err){ 
+                        console.log(err)
+                    }
+            }
             
         }
         
 
     }
-}})
+})
 
 client.login(`${config.clientid}`)
