@@ -2,30 +2,7 @@ const config = require('./config.json')
 const ytdl = require("@distube/ytdl-core")
 const { Client, Events, GatewayIntentBits, SlashCommandBuilder, Collection, EmbedBuilder, } = require('discord.js');
 const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection,  AudioPlayerStatus } = require("@discordjs/voice")
-const fs = require('node:fs')
 const prefix="&"
-
-
-
-// Client
-const client = new Client({ intents: [GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildVoiceStates
-]})
-
-
-// Modules for slash commands
-client.commands = new Collection();
-const folderpath = './modules'
-const cmdfolder = fs.readdirSync('./modules')
-
-for (folder in cmdfolder){
-    console.log(`${cmdfolder[folder]} - Discord`)
-    const command = require(`${folderpath}/${cmdfolder[folder]}`)
-    client.commands.set(command.data.name, command);
-}
 
 
 // Repeat
@@ -72,6 +49,12 @@ player.on(AudioPlayerStatus.Idle, () => {
 
 
 
+const client = new Client({ intents: [GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates
+]})
 
 
 
@@ -79,7 +62,65 @@ client.once(Events.ClientReady, cl => {
     console.log("Focalors onlyfans service is up")
 })
 
-/*
+client.on("messageCreate", (msg) =>{
+    var content = msg.content
+    var author = msg.author.globalName
+    var a = 0
+
+    if (msg.content.startsWith(prefix)){
+        commandargs = content.slice(1).split(" ") // "first argument" is command name
+        if (!commandargs[0]){
+            console.log("Empty prefix.")
+        } else {
+            if (commandargs[0] == "ruehaxo26may"){
+                var unholy_link = "https://rule34.xxx/index.php?page=post&s=list&tags=furina_%28genshin_impact%29+yuri+-ai_generated+-smelly+-video+-fart+-bloated"
+                var func = async () => {
+                    var resp = await fetch(unholy_link);
+                    var resptext = await resp.text();
+                    var textarray = resptext.split("\n");
+                    var outputs = []
+                    var link_array = []
+                    var pidnum = 42
+
+                    for (i in textarray){
+                        if(textarray[i].includes("<img src=")){
+                            if(textarray[i].includes('wimg')){
+                                outputs.push(textarray[i].match(/(src=".+")/)[1].split(" ")[0].replace("src=\"","")) 
+                            }
+                        } else if (textarray[i].includes("<a href=\"?page=post&amp;s=list&amp;tags=furina_%28genshin_impact%29+yuri+-ai_generated+-smelly+-video+-fart+-bloated&amp;")){
+                            var count = (textarray[i].match(/is/g) || []).length;
+                        }
+                        
+                    }
+                    count = count/2
+                    i=0
+                    while (i != count+1){
+                        link_array.push(`${unholy_link}&pid=${i*pidnum}`)
+                        i++;
+                    }
+                    link_array.shift()
+                    for (a in link_array){
+                        var resp = await fetch(link_array[a]);
+                        var resptext = await resp.text();
+                        var textarray = resptext.split("\n");
+                        for (i in textarray){
+                            if(textarray[i].includes("<img src=")){
+                                if(textarray[i].includes('wimg')){
+                                    outputs.push(textarray[i].match(/(src=".+")/)[1].split(" ")[0].replace("src=\"","")) 
+                                }}
+                    }}
+                    
+                    chosenimage = outputs[Math.floor(Math.random() * outputs.length)]
+                    const Embed = new EmbedBuilder()
+                    .setColor("#000000")
+                    .setFooter({ text: "i have no more pasta"})
+                    .setTimestamp()
+                    .setTitle(`${author}! You asked for this.`)
+                    .setImage(`${chosenimage}`)
+
+                    msg.channel.send({ embeds: [Embed]})
+                };
+                try {func()} catch (err) {console.log(err)}
             
         } else if(commandargs[0] == "play"){
 
@@ -160,15 +201,5 @@ client.once(Events.ClientReady, cl => {
 
     }
 })
-*/
 
-client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isChatInputCommand()){return};
-    var command = interaction.client.commands.get(interaction.commandName);
-    if (!command){
-        console.log(`Did not find: ${interaction.commandName} !`)
-    }
-    await command.execute(interaction)
-});
-
-client.login(`${config.token}`)
+client.login(`${config.clientid}`)
