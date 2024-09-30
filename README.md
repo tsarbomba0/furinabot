@@ -1,5 +1,16 @@
-# Furinabot
-Discord bot based on discord.js that does ONE unholy thing..
-let's you very easily fetch random images of Furina (only yuri)
+# Furina
+a very early bot in development named after Furina de Fontaine
+
+## Functions
+
+- Simple rule34 scraper to display yuri *content* of Furina
+- Very basic music management (rn, only plays music)
+
+## Requirements
+
+==ABOVE ALL==: - node.js
+- lavalink-client
+- discord.js
+-
 
 

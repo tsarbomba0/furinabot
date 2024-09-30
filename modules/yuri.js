@@ -17,7 +17,8 @@ module.exports = {
     .setDescription('Guess what!')
     .addStringOption(option => 
         option.setName('victim')
-            .setDescription('Character name.')),
+            .setDescription('Character name.')
+    ),
 
     async execute(interaction){
         var author = interaction.user.globalName
@@ -55,9 +56,6 @@ module.exports = {
         .setImage(`${chosenlink}`)
         interaction.channel.send({ embeds: [Embed]})  
             
-        
-
-        
         try {
             await interaction.reply({ content: "Ohe!", ephemeral: true})
         } catch (err) { 
