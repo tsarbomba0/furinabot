@@ -1,5 +1,5 @@
 # Furina
-a very early bot in development named after Furina de Fontaine
+A very early bot in development named after Furina de Fontaine
 
 ## Functions
 
@@ -8,9 +8,9 @@ a very early bot in development named after Furina de Fontaine
 
 ## Requirements
 
-==ABOVE ALL==: - node.js
+ABOVE ALL: - node.js
 - lavalink-client
 - discord.js
--
+- Also a lavalink node ready!
 
 
