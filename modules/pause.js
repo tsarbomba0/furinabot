@@ -7,25 +7,32 @@ module.exports = {
     .setName('pause')
     .setDescription('Pauses or unpauses the bot'),
     async execute(interaction){
-        const player = interaction.client.getPlayer(interaction.guildId)
+        var title = "";
+        if(interaction.client.lavalink.getPlayer(interaction.guild.id) === undefined){
+            console.log("No player!")
+            return 0;
+        } 
+
+        const player = interaction.client.lavalink.getPlayer(interaction.guild.id);
         if(!player.connected){
-            return false
+            console.log("Player not connected!")
+            return 0
         }
         if(player.paused){
             player.resume();
-            const title = "Resumed the bot!"
+            title = "Resumed the bot!"
         } else if (player.playing){
             player.pause();
-            const title = "Paused the bot!"
+            title = "Paused the bot!"
         } else {
             console.log("Player hasn't been playing yet!")
-            const title = "Nothing was playing yet!"
+            title = "Nothing was playing yet!"
         }
         const embed = new EmbedBuilder()
         .setColor('#000000')
         .setTitle(`${title}`)
         .setTimestamp()
-        .setFooter("aux Mac-Mahon, aux Dupanloup")
+        .setFooter({ text: "aux Mac-Mahon, aux Dupanloup"})
 
         await interaction.reply({embeds: [embed]})
     },
