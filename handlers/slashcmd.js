@@ -8,6 +8,7 @@ const rest = new REST().setToken(token)
 const cmds = [];
 const folderpath = '../modules'
 const cmdfolder = fs.readdirSync('../modules')
+console.log(cmdfolder)
 
 for (folder in cmdfolder){
     console.log(cmdfolder[folder])

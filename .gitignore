@@ -1,6 +1,7 @@
 # Logs
 logs
 lavalink/logs
+lavalink/lavalink.jar
 
 *.log
 npm-debug.log*
