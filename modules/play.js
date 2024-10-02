@@ -1,13 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const config = require('../config.json')
-const ytdl = require("@distube/ytdl-core")
-const { LavalinkManager } = require("lavalink-client");
-
+console.log(config)
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('play music')
+        .setDescription('Play music!')
         .addStringOption(option =>
             option.setName('platform')
                 .setRequired(true)
@@ -56,7 +54,7 @@ module.exports = {
         .setTitle("Playing!")
         .setDescription(`${res.tracks[0].info.title}`)
         .setThumbnail(res.tracks[0].info.artworkUrl)
-        .setColor("#000000")
+        .setColor(config.embed_color)
         .setFooter({ text: "À Bas l'Etat Policier" })
         .setTimestamp()
 
