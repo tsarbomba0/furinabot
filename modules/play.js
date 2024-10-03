@@ -58,10 +58,16 @@ module.exports = {
                 break;
             case "playlist":
                 console.log("TODO! playlist");
-                console.log(res)
+                res.tracks.forEach(track => {
+                    player.queue.add(track);
+                });
+                var artworkurl = res.playlist.thumbnail
+                var title = res.playlist.title
                 break;
             case "search":
                 player.queue.add(res.tracks[0]);
+                var artworkurl = res.tracks[0].info.artworkUrl
+                var title = res.tracks[0].info.title
                 break;
             case "error":
                 console.log("Error loadtype")
@@ -74,8 +80,8 @@ module.exports = {
         // Embed
         const embed = new EmbedBuilder()
         .setTitle("Playing!")
-        .setDescription(`${res.tracks[0].info.title}`)
-        .setImage(res.tracks[0].info.artworkUrl)
+        .setDescription(title)
+        .setImage(artworkurl)
         .setColor(config.embed_color)
         .setFooter({ text: "À Bas l'Etat Policier" })
         .setTimestamp()

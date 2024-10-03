@@ -4,10 +4,42 @@ server: # REST and WS server
   http2:
     enabled: false # Whether to enable HTTP/2 support
 plugins:
-   - dependency: "dev.lavalink.youtube:youtube-plugin:VERSION"
+   lavasrc:
+    providers: # Custom providers for track loading. This is the default
+      # - "dzisrc:%ISRC%" # Deezer ISRC provider
+      # - "dzsearch:%QUERY%" # Deezer search provider
+      - "ytsearch:\"%ISRC%\"" # Will be ignored if track does not have an ISRC. See https://en.wikipedia.org/wiki/International_Standard_Recording_Code
+      - "ytsearch:%QUERY%" # Will be used if track has no ISRC or no track could be found for the ISRC
+      #  you can add multiple other fallback sources here
+    sources:
+      spotify: true # Enable Spotify source
+      applemusic: false # Enable Apple Music source
+      deezer: false # Enable Deezer source
+      yandexmusic: false # Enable Yandex Music source
+      flowerytts: false # Enable Flowery TTs source
+      youtube: true # Enable YouTube search source (https://github.com/topi314/LavaSearch)
+      vkmusic: false # Enable Vk Music source
+    lyrics-sources:
+      spotify: true # Enable Spotify lyrics source
+      deezer: false # Enable Deezer lyrics source
+      youtube: true # Enable YouTube lyrics source
+      yandexmusic: false # Enable Yandex Music lyrics source
+      vkmusic: false # Enable Vk Music lyrics source
+    spotify:
+      clientId: "8a7242abfdb54a88b4c01f668166f38c"
+      clientSecret: "e9d2dd0232cc4dd1b9dae6bcd40ee6b5t"
+      spDc: "AQDgFTZrTSz5IWEIPPH57ZVdWWHZzSB5EXIu52mlgL3Hd7J3qAmblTnW6WqtxYuyCyn-i8PV3JZQVbGUILzzC9ZeD8n_5KvQlP8NpZbX5aFc0mQReMsTzVvapWRC5a4XD7uhXk3nx5aIAemJRkcwjHwSzVRYWr80" # the sp dc cookie used for accessing the spotify lyrics api
+      countryCode: "US" # the country code you want to use for filtering the artists top tracks. See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+      playlistLoadLimit: 6 # The number of pages at 100 tracks each
+      albumLoadLimit: 6 # The number of pages at 50 tracks each
+      localFiles: false #  Enable local files support with Spotify playlists. Please note `uri` & `isrc` will be `null` & `identifier` will be `"local"`
+ 
+       
 
 lavalink:
   plugins:
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.8.3"
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.3.0"
   youtube:
     enabled: true
     allowSearch: true # Whether "ytsearch:" and "ytmsearch:" can be used.
