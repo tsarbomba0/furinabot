@@ -46,14 +46,36 @@ module.exports = {
         // Platform to use
         var platform = interaction.options.getString("platform")
 
-        // Response 
-        const res = await player.search({query: query, source: platform},interaction.user);
-
+        // Response and switch case for tracks
+        const res = await player.search({query: query, source: platform}, interaction.user);
+        switch(res.loadType){
+            case "empty":
+                console.log("Empty loadtype!");
+                interaction.reply({ content: "Empty result from query!", ephemeral: true});
+                break;
+            case "track":
+                player.queue.add(res.tracks[0]);
+                break;
+            case "playlist":
+                console.log("TODO! playlist");
+                console.log(res)
+                break;
+            case "search":
+                player.queue.add(res.tracks[0]);
+                break;
+            case "error":
+                console.log("Error loadtype")
+                break;
+            default:
+                console.log("defaulted at loadtype switch case")
+                break;
+        }
+        
         // Embed
         const embed = new EmbedBuilder()
         .setTitle("Playing!")
         .setDescription(`${res.tracks[0].info.title}`)
-        .setThumbnail(res.tracks[0].info.artworkUrl)
+        .setImage(res.tracks[0].info.artworkUrl)
         .setColor(config.embed_color)
         .setFooter({ text: "À Bas l'Etat Policier" })
         .setTimestamp()
@@ -63,7 +85,7 @@ module.exports = {
         })
 
         // Adding to queue
-        player.queue.add(res.tracks[0])
+        
 
         // Playing if the player isn't currently playing 
         if(!player.playing) {
