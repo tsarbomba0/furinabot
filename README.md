@@ -1,16 +1,20 @@
 # Furina
-A very early bot in development named after Furina de Fontaine
+A bot early in development named after Furina de Fontaine
 
 ## Functions
 
-- Simple rule34 scraper to display yuri *content* of Furina
-- Very basic music management (rn, only plays music)
+- Simple rule34 scraper to display yuri *content* of Furina!
+- Music player bot!
 
 ## Requirements
 
-ABOVE ALL: - node.js
+- node.js
 - lavalink-client
 - discord.js
-- Also a lavalink node ready!
+- working lavalink node (provided configuration in lavalink/ let's you self-host it!)
+
+## Stuff
+- icons from Icons8 
+
 
 
