@@ -35,6 +35,7 @@ module.exports = {
         player.queue.tracks.splice(0, player.queue.tracks.length)
 
         console.log(entire_queue)
+        
         // Assign new queue to the player.queue object
         entire_queue.forEach(track => {
             player.queue.add(track)

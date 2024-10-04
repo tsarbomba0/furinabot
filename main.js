@@ -37,7 +37,7 @@ client.lavalink.on("nodeCreate", node => {
 
 // Event: Handling raw WebSocket events
 client.on("raw", data => {
-    client.lavalink.sendRawData(data); // Passing raw data to Moonlink.js for handling
+    client.lavalink.sendRawData(data); // Passing raw data to lavalink-client   for handling
 });
 
 

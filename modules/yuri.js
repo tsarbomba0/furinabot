@@ -14,7 +14,7 @@ const unholy_link = "https://rule34.xxx/index.php?page=post&s=list&tags=furina_%
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('yuri')
-    .setDescription('Guess what!')
+    .setDescription('Sends yuri content of Furina')
     .addStringOption(option => 
         option.setName('victim')
             .setDescription('Character name.')
@@ -49,15 +49,14 @@ module.exports = {
         
         chosenlink = href_array[Math.floor(Math.random() * href_array.length)]
         const Embed = new EmbedBuilder()
-        .setColor("#000000")
-        .setFooter({ text: "i have no more pasta"})
+        .setColor(config.embed_color)
+        .setFooter({ text: "lovely....!"})
         .setTimestamp()
         .setTitle(`${author}! You asked for this.`)
         .setImage(`${chosenlink}`)
-        interaction.channel.send({ embeds: [Embed]})  
             
         try {
-            await interaction.reply({ content: "Ohe!", ephemeral: true})
+            await interaction.reply({ embeds: [Embed], ephemeral: true})
         } catch (err) { 
             console.log(err) 
         }

@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const config = require('../config.json')
-console.log(config)
+const SongInfoExport = require('../classes/SongInfoExport.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,12 +22,6 @@ module.exports = {
                 .setDescription('link to play')),
     
     async execute(interaction, client) {
-        // Debug info
-        console.log({
-            guildid: `${interaction.guild.id}`,
-            vcid: `${interaction.member.voice.channel.id}`,
-            txtchid: `${interaction.channel.id}`
-        })
 
         // Creating a player
         const player = client.lavalink.createPlayer({
@@ -48,44 +42,50 @@ module.exports = {
 
         // Response and switch case for tracks
         const res = await player.search({query: query, source: platform}, interaction.user);
+
         switch(res.loadType){
             case "empty":
                 console.log("Empty loadtype!");
                 interaction.reply({ content: "Empty result from query!", ephemeral: true});
                 break;
+
             case "track":
-                console.log("Track!")
-                console.log(res)
+            case "search":
+                console.log(res.tracks[0].info)
                 player.queue.add(res.tracks[0]);
                 var artworkurl = res.tracks[0].info.artworkUrl
                 var title = res.tracks[0].info.title
+                var songinfo = new SongInfoExport(interaction.guild.id, res.tracks[0], false, interaction).json
                 break;
+
             case "playlist":
-                console.log("Playlist!")
                 res.tracks.forEach(track => {
                     player.queue.add(track);
                 });
                 var artworkurl = res.playlist.thumbnail
                 var title = res.playlist.title
+                var songinfo = new SongInfoExport(interaction.guild.id, res.playlist, true, interaction).json
                 break;
-            case "search":
-                console.log("Search!")
-                player.queue.add(res.tracks[0]);
-                var artworkurl = res.tracks[0].info.artworkUrl
-                var title = res.tracks[0].info.title
-                break;
+            
             case "error":
                 console.log("Error loadtype")
                 break;
+
             default:
                 console.log("defaulted at loadtype switch case")
                 break;
         }
         
+        // Attachment and filenames
+        const file = `./img/music_players/${platform.replace("search", '')}50.png`
+        const filename = `${platform.replace("search", '')}50.png`
+        const attachment = new AttachmentBuilder(file)
+
         // Embed
         const embed = new EmbedBuilder()
         .setTitle("Playing!")
         .setDescription(title)
+        .setThumbnail(`attachment://${filename}`)
         .setImage(artworkurl)
         .setColor(config.embed_color)
         .setFooter({ text: "À Bas l'Etat Policier" })
@@ -93,10 +93,9 @@ module.exports = {
 
         interaction.reply({
             embeds: [embed],
+            files: [attachment],
         })
-
-        // Adding to queue
-        
+        console.log(songinfo)
 
         // Playing if the player isn't currently playing 
         if(!player.playing) {

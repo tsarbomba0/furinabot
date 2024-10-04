@@ -18,7 +18,7 @@ for (folder in cmdfolder){
 
 (async () => {
     const data = await rest.put(
-        Routes.applicationGuildCommands(clientid, guildid),
+        Routes.applicationCommands(clientid),
         { body: cmds },
     );
 })();
