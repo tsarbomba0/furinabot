@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const config = require('../config.json')
-const SongInfoExport = require('../classes/SongInfoExport.js')
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,7 +22,7 @@ module.exports = {
                 .setDescription('link to play')),
     
     async execute(interaction, client) {
-        console.log(interaction.client.express)
+        
         // Creating a player
         const player = client.lavalink.createPlayer({
             guildId: interaction.guild.id,
@@ -45,7 +45,6 @@ module.exports = {
 
         // Response and switch case for tracks
         const res = await player.search({query: query, source: platform}, interaction.user);
-
         switch(res.loadType){
             case "empty":
                 interaction.reply({ content: "Empty result from query!", ephemeral: true});
@@ -56,7 +55,6 @@ module.exports = {
                 player.queue.add(res.tracks[0]);
                 var artworkurl = res.tracks[0].info.artworkUrl
                 var title = res.tracks[0].info.title
-                songinfo = new SongInfoExport(interaction.guild.id, res.tracks[0], false, interaction).json
                 break;
 
             case "playlist":
@@ -65,7 +63,6 @@ module.exports = {
                 });
                 var artworkurl = res.playlist.thumbnail
                 var title = res.playlist.title
-                songinfo = new SongInfoExport(interaction.guild.id, res.playlist, true, interaction).json
                 break;
             
             case "error":
@@ -97,8 +94,6 @@ module.exports = {
             files: [attachment],
         })
 
-        // debug for song info
-        console.log(JSON.parse(songinfo))
 
         // Playing if the player isn't currently playing 
         if(!player.playing) {

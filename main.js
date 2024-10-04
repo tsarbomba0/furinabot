@@ -4,6 +4,7 @@ const fs = require('node:fs')
 const { LavalinkManager } = require("lavalink-client");
 const express = require('express');
 const port = 8989;
+const SongInfoExport = require('./classes/SongInfoExport.js')
 
 // Client
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
@@ -71,10 +72,20 @@ client.once(Events.ClientReady, cl => {
     console.log("Focalors onlyfans service is up")
 })
 
+// Events for lavalink
+client.lavalink.on("trackStart", (player, track, payload) => {
+    songinfo = new SongInfoExport(player.guildId, track, false, client).json
+    // send SongInfo to Express (as JSON)
+    client.express.get('/musicinfo', (req, res) =>{
+        res.setHeader('Content-Type', 'application/json');
+        res.send(songinfo)
+    })
+})
+
 // Express listening
 client.express.listen(port, () => {
     console.log(`Listening on port ${port}`)
-  })
+})
 
 
 client.login(`${config.token}`)
