@@ -1,11 +1,10 @@
 const config = require('./config.json')
-//const ytdl = require("@distube/ytdl-core")
 const { Client, Events, GatewayIntentBits, SlashCommandBuilder, Collection, EmbedBuilder, } = require('discord.js');
-//const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection,  AudioPlayerStatus } = require("@discordjs/voice")
 const fs = require('node:fs')
 const { LavalinkManager } = require("lavalink-client");
+const express = require('express');
+const port = 8989;
 
-//const nodes = require('./lavalink/nodes.json')
 // Client
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -13,6 +12,9 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
 ]})
+
+// Express.js
+client.express = express()
 
 // Manager
 client.lavalink = new LavalinkManager({
@@ -69,6 +71,10 @@ client.once(Events.ClientReady, cl => {
     console.log("Focalors onlyfans service is up")
 })
 
+// Express listening
+client.express.listen(port, () => {
+    console.log(`Listening on port ${port}`)
+  })
 
 
 client.login(`${config.token}`)

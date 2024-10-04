@@ -22,7 +22,7 @@ module.exports = {
                 .setDescription('link to play')),
     
     async execute(interaction, client) {
-
+        console.log(interaction.client.express)
         // Creating a player
         const player = client.lavalink.createPlayer({
             guildId: interaction.guild.id,
