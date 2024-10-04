@@ -54,10 +54,14 @@ module.exports = {
                 interaction.reply({ content: "Empty result from query!", ephemeral: true});
                 break;
             case "track":
+                console.log("Track!")
+                console.log(res)
                 player.queue.add(res.tracks[0]);
+                var artworkurl = res.tracks[0].info.artworkUrl
+                var title = res.tracks[0].info.title
                 break;
             case "playlist":
-                console.log("TODO! playlist");
+                console.log("Playlist!")
                 res.tracks.forEach(track => {
                     player.queue.add(track);
                 });
@@ -65,6 +69,7 @@ module.exports = {
                 var title = res.playlist.title
                 break;
             case "search":
+                console.log("Search!")
                 player.queue.add(res.tracks[0]);
                 var artworkurl = res.tracks[0].info.artworkUrl
                 var title = res.tracks[0].info.title

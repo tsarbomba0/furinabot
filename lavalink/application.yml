@@ -27,7 +27,7 @@ plugins:
       vkmusic: false # Enable Vk Music lyrics source
     spotify:
       clientId: "8a7242abfdb54a88b4c01f668166f38c"
-      clientSecret: "e9d2dd0232cc4dd1b9dae6bcd40ee6b5t"
+      clientSecret: "e9d2dd0232cc4dd1b9dae6bcd40ee6b5"
       spDc: "AQDgFTZrTSz5IWEIPPH57ZVdWWHZzSB5EXIu52mlgL3Hd7J3qAmblTnW6WqtxYuyCyn-i8PV3JZQVbGUILzzC9ZeD8n_5KvQlP8NpZbX5aFc0mQReMsTzVvapWRC5a4XD7uhXk3nx5aIAemJRkcwjHwSzVRYWr80" # the sp dc cookie used for accessing the spotify lyrics api
       countryCode: "US" # the country code you want to use for filtering the artists top tracks. See https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
       playlistLoadLimit: 6 # The number of pages at 100 tracks each
