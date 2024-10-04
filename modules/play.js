@@ -34,6 +34,9 @@ module.exports = {
         // Connecting the player
         player.connect();
         
+        // Variable for song information 
+        var songinfo = ""
+
         // Query
         var query = interaction.options.getString("link")
 
@@ -45,17 +48,15 @@ module.exports = {
 
         switch(res.loadType){
             case "empty":
-                console.log("Empty loadtype!");
                 interaction.reply({ content: "Empty result from query!", ephemeral: true});
                 break;
 
             case "track":
             case "search":
-                console.log(res.tracks[0].info)
                 player.queue.add(res.tracks[0]);
                 var artworkurl = res.tracks[0].info.artworkUrl
                 var title = res.tracks[0].info.title
-                var songinfo = new SongInfoExport(interaction.guild.id, res.tracks[0], false, interaction).json
+                songinfo = new SongInfoExport(interaction.guild.id, res.tracks[0], false, interaction).json
                 break;
 
             case "playlist":
@@ -64,7 +65,7 @@ module.exports = {
                 });
                 var artworkurl = res.playlist.thumbnail
                 var title = res.playlist.title
-                var songinfo = new SongInfoExport(interaction.guild.id, res.playlist, true, interaction).json
+                songinfo = new SongInfoExport(interaction.guild.id, res.playlist, true, interaction).json
                 break;
             
             case "error":
@@ -72,7 +73,7 @@ module.exports = {
                 break;
 
             default:
-                console.log("defaulted at loadtype switch case")
+                console.log("Defaulted at loadtype switch case")
                 break;
         }
         
@@ -95,7 +96,9 @@ module.exports = {
             embeds: [embed],
             files: [attachment],
         })
-        console.log(songinfo)
+
+        // debug for song info
+        console.log(JSON.parse(songinfo))
 
         // Playing if the player isn't currently playing 
         if(!player.playing) {

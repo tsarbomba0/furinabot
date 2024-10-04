@@ -27,7 +27,7 @@ class SongInfoExport {
                 throw new Error('Parameter is not a boolean!')
         }
 
-        const trackName = this.track.title
+        const trackName = this.track.info.title
         const serverIconUrl = `https://cdn.discordapp.com/icons/${this.guildid}/${this.interaction.guild.icon}.png`
         const serverName = `${this.interaction.guild.name}`
         const trackAuthor = this.track.info.author
