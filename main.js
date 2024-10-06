@@ -1,10 +1,12 @@
 const config = require('./config.json')
-const { Client, Events, GatewayIntentBits, SlashCommandBuilder, Collection, EmbedBuilder, } = require('discord.js');
+const { Client, Events, ActivityType, GatewayIntentBits, Collection, PresenceUpdateStatus, } = require('discord.js');
 const fs = require('node:fs')
 const { LavalinkManager } = require("lavalink-client");
 const express = require('express');
 const port = 8989;
 const SongInfoExport = require('./classes/SongInfoExport.js')
+const folderpath = './modules'
+const cmdfolder = fs.readdirSync('./modules')
 
 // Client
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
@@ -13,6 +15,8 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
 ]})
+
+
 
 // Express.js
 client.express = express()
@@ -33,28 +37,18 @@ client.lavalink = new LavalinkManager({
     },
 });
 
-// Event: When a node is successfully created and connected
-client.lavalink.on("nodeCreate", node => {
-    console.log(`${node.host} was connected`);
-});
-
 // Event: Handling raw WebSocket events
 client.on("raw", data => {
     client.lavalink.sendRawData(data); // Passing raw data to lavalink-client   for handling
 });
 
-
-
 // Modules for slash commands
 client.commands = new Collection();
-const folderpath = './modules'
-const cmdfolder = fs.readdirSync('./modules')
 for (folder in cmdfolder){
     console.log(`${cmdfolder[folder]} - Discord`)
     const command = require(`${folderpath}/${cmdfolder[folder]}`)
     client.commands.set(command.data.name, command);
 }
-
 
 // Slash commands
 client.on(Events.InteractionCreate, async interaction => {
@@ -69,12 +63,14 @@ client.on(Events.InteractionCreate, async interaction => {
 // Once ready
 client.once(Events.ClientReady, cl => {
     client.lavalink.init(client.user);
-    console.log("Focalors onlyfans service is up")
+    // Client presence
+    client.user.setPresence({ activities: [{ name: "Ei & Yae Miko in bedsheets", type: ActivityType.Watching }], status: PresenceUpdateStatus.Online })
+    console.log("(discord) Focalors onlyfans service is up")
 })
 
-// Events for lavalink
+// Sending information about currently playing song
 client.lavalink.on("trackStart", (player, track, payload) => {
-    songinfo = new SongInfoExport(player.guildId, track, false, client).json
+    songinfo = new SongInfoExport(player.guildId, track, client).json
     // send SongInfo to Express (as JSON)
     client.express.get('/musicinfo', (req, res) =>{
         res.setHeader('Content-Type', 'application/json');
@@ -84,8 +80,7 @@ client.lavalink.on("trackStart", (player, track, payload) => {
 
 // Express listening
 client.express.listen(port, () => {
-    console.log(`Listening on port ${port}`)
+    console.log(`(expressjs) Listening on port ${port}`)
 })
-
 
 client.login(`${config.token}`)

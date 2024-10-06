@@ -7,8 +7,8 @@ module.exports = {
     .setDescription('Stops the player!'),
 
     async execute(interaction){
-        const player = interaction.client.lavalink.get.players(interaction.guild.id)
-        if(player && interaction.user.voice.channel){
+        const player = interaction.client.lavalink.getPlayer(interaction.guild.id)
+        if(player && interaction.member.voice.channel.id === player.voiceChannelId){
             player.destroy()
             await interaction.reply({ embeds: [
                 new EmbedBuilder()
@@ -18,7 +18,7 @@ module.exports = {
             .setFooter({ text: "May your light shine bright!" })
             .setTimestamp()
             ]})
-        } else if (!player && interaction.user.voice.channel){
+        } else if (!player){
             await interaction.reply({ embeds: [
                 new EmbedBuilder()
                 .setTitle("No music player to be stopped!")

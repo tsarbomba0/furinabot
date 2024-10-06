@@ -20,7 +20,7 @@ module.exports = {
         }
 
         // All tracks
-        var entire_queue = player.queue.previous.concat(player.queue.tracks, player.queue.current)
+        let entire_queue = player.queue.previous.concat(player.queue.tracks, player.queue.current)
 
         // Shuffle the queue
         for (var i = entire_queue.length - 1; i >= 0; i--){
@@ -33,8 +33,6 @@ module.exports = {
 
         // Clear entire player queue
         player.queue.tracks.splice(0, player.queue.tracks.length)
-
-        console.log(entire_queue)
         
         // Assign new queue to the player.queue object
         entire_queue.forEach(track => {

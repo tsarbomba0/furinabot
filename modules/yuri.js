@@ -3,14 +3,13 @@ const { EmbedBuilder } = require("discord.js");
 const config = require('../config.json')
 const axios = require('axios');
 const cheerio = require('cheerio')
-
-
-var next_page_array=[]
-var c = 0
-
-
-// Ugh
 const unholy_link = "https://rule34.xxx/index.php?page=post&s=list&tags=furina_%28genshin_impact%29+yuri+-ai_generated+-smelly+-video+-fart+-bloated"
+
+let next_page_array=[]
+let c = 0
+let page_array=[]
+let href_array=[]
+
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('yuri')
@@ -21,11 +20,10 @@ module.exports = {
     ),
 
     async execute(interaction){
-        var author = interaction.user.globalName
-        var page_array=[]
-        var href_array=[]
+        let author = interaction.user.globalName
         
-        var $ = await cheerio.fromURL(unholy_link)
+        
+        const $ = await cheerio.fromURL(unholy_link)
         $('img').each( (n, el) =>{
             if (!(el.attribs['data-cfsrc'].includes("images"))){
                 href_array.push(el.attribs['data-cfsrc'])
@@ -39,7 +37,7 @@ module.exports = {
         })
 
         for (num in page_array){
-            var ohe = await cheerio.fromURL('https://rule34.xxx/index.php'+ page_array[num])
+            let ohe = await cheerio.fromURL('https://rule34.xxx/index.php'+ page_array[num])
             ohe('img').each( (n, el) =>{
                 if (!(el.attribs['data-cfsrc'].includes("images"))){
                     href_array.push(el.attribs['data-cfsrc'])
@@ -56,7 +54,7 @@ module.exports = {
         .setImage(`${chosenlink}`)
             
         try {
-            await interaction.reply({ embeds: [Embed], ephemeral: true})
+            await interaction.reply({ embeds: [Embed] })
         } catch (err) { 
             console.log(err) 
         }
