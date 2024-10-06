@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const config = require('../config.json')
 const { soundcloud_playlist_regex, soundcloud_track_regex, spotify_playlist_regex, spotify_track_regex, youtube_playlist_regex, youtube_track_regex,} = require('../util/regex.ts')
-let platform = "ytsearch";
 let title;
 let artworkurl;
 
@@ -19,6 +18,7 @@ module.exports = {
         let query = interaction.options.getString("link")
         
         // Checking which search should be used
+        let platform = "ytsearch";
         if (query.match(youtube_track_regex) !== null | query.match(youtube_playlist_regex) !== null){
             platform = "ytsearch"
         } else if (query.match(spotify_track_regex) !== null | query.match(spotify_playlist_regex) !== null){
