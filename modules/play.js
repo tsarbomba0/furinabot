@@ -3,6 +3,7 @@ const config = require('../config.json')
 const { soundcloud_playlist_regex, soundcloud_track_regex, spotify_playlist_regex, spotify_track_regex, youtube_playlist_regex, youtube_track_regex,} = require('../util/regex.ts')
 let title;
 let artworkurl;
+let platform = "ytsearch";
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,7 +19,6 @@ module.exports = {
         let query = interaction.options.getString("link")
         
         // Checking which search should be used
-        let platform = "ytsearch";
         if (query.match(youtube_track_regex) !== null | query.match(youtube_playlist_regex) !== null){
             platform = "ytsearch"
         } else if (query.match(spotify_track_regex) !== null | query.match(spotify_playlist_regex) !== null){
@@ -33,6 +33,7 @@ module.exports = {
             voiceChannelId: interaction.member.voice.channel.id,
             textChannelId: interaction.channel.id,
             selfDeaf: true,
+            selfMute: false
         });
         
         // Connecting the player
@@ -53,21 +54,16 @@ module.exports = {
                 break;
 
             case "playlist":
-                console.log(res)
                 res.tracks.forEach(track => {
                     player.queue.add(track);
                 });
                 artworkurl = res.playlist.thumbnail
                 title = res.playlist.title
                 break;
-            
-            case "error":
-                interaction.reply({ content: "An error occured!", ephemeral: true });
-                return;
-                break;
 
             default:
-                console.log("This shouldn't happen...")
+            case "error":
+                interaction.reply({ content: "An error occured!", ephemeral: true });
                 return;
                 break;
         }
@@ -83,20 +79,24 @@ module.exports = {
         const attachment = new AttachmentBuilder(file)
 
         // Embed
-        const embed = new EmbedBuilder()
-        .setTitle("Playing!")
-        .setDescription(title)
-        .setThumbnail(`attachment://${filename}`)
-        .setImage(artworkurl)
-        .setColor(config.embed_color)
-        .setFooter({ text: "À Bas l'Etat Policier" })
-        .setTimestamp()
+        try { 
+            const embed = new EmbedBuilder()
+            .setTitle("Playing!")
+            .setDescription(title)
+            .setThumbnail(`attachment://${filename}`)
+            .setImage(artworkurl)
+            .setColor(config.embed_color)
+            .setFooter({ text: "À Bas l'Etat Policier" })
+            .setTimestamp()
         
-        interaction.reply({
-            embeds: [embed],
-            files: [attachment],
+            interaction.reply({
+                embeds: [embed],
+                files: [attachment],
             
-        })        
+            }) 
+        } catch {
+            interaction.reply(`Playing - ${title} (this is a fallback message, report if it happens)`)
+        }  
         
     }
 }
