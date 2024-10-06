@@ -11,12 +11,10 @@ module.exports = {
         const player = interaction.client.lavalink.getPlayer(interaction.guild.id)
         if(!player){ 
             interaction.reply({ content: "There is no player active!", ephemeral: true});
-            return 0;
-        }
-        // check if player.queue exists
-        if(!player.queue){ 
+            return;
+        } else if(!player.queue){ 
             interaction.reply({ content: "The player has no queue!", ephemeral: true});
-            return 0;
+            return;
         }
 
         // All tracks

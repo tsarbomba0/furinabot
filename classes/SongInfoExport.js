@@ -13,8 +13,6 @@ class SongInfoExport {
         return this.genJSON()
     }
 
-    
-
     genJSON(){
         let guild = this.client.guilds.cache.get(this.guildid)
         return JSON.stringify({

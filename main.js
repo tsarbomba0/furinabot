@@ -53,7 +53,7 @@ for (folder in cmdfolder){
 // Slash commands
 client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()){return};
-    var command = interaction.client.commands.get(interaction.commandName);
+    let command = interaction.client.commands.get(interaction.commandName);
     if (!command){
         console.log(`Did not find: ${interaction.commandName} !`)
     }
