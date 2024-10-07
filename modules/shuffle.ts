@@ -1,5 +1,5 @@
-const config = require('../config.json')
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+import config from '../config.json';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,7 +22,7 @@ module.exports = {
 
         // Shuffle the queue
         for (var i = entire_queue.length - 1; i >= 0; i--){
-            var num = Math.floor(Math.random * (i+1))
+            var num = Math.floor(Math.random as any * (i+1))
             var temporary = entire_queue[i]
             entire_queue[i] = entire_queue[num]
             entire_queue[num] = temporary;

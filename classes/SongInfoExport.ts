@@ -1,8 +1,11 @@
-const config = require('../config.json');
+import config from '../config.json';
 
 // Class to export track name, track author, track artwork, track duration, server icon uri and the server name as JSON
-class SongInfoExport {
-    constructor(guildid, track, client){
+export class SongInfoExport {
+    guildid: string;
+    track: any;
+    client: any;
+    constructor(guildid: string, track: any, client: any){
         this.guildid = guildid
         this.track = track
         this.client = client
@@ -27,4 +30,4 @@ class SongInfoExport {
 }
 
 
-module.exports = SongInfoExport
+

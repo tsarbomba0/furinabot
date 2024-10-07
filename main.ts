@@ -1,12 +1,13 @@
-const config = require('./config.json')
-const { Client, Events, ActivityType, GatewayIntentBits, Collection, PresenceUpdateStatus, } = require('discord.js');
-const fs = require('node:fs')
-const { LavalinkManager } = require("lavalink-client");
-const express = require('express');
-const port = 8989;
-const SongInfoExport = require('./classes/SongInfoExport.js')
+import config from './config.json';
+import { Client, Events, ActivityType, GatewayIntentBits, Collection, PresenceUpdateStatus } from 'discord.js';
+import fs from 'node:fs';
+import { GuildShardPayload, LavalinkManager, Track } from "lavalink-client";
+import express from 'express';
+import { SongInfoExport } from './classes/SongInfoExport'; 
+
 const folderpath = './modules'
 const cmdfolder = fs.readdirSync('./modules')
+const port = 8989;
 
 // Client
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
@@ -14,7 +15,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
-]})
+]}) as any
 
 
 
@@ -29,7 +30,7 @@ client.lavalink = new LavalinkManager({
         port: 2333,
         authorization: "youshallnotpass",
     }],
-    sendToShard: (guildId, payload) => client.guilds.cache.get(guildId)?.shard?.send(payload),
+    sendToShard: (guildId: string, payload: GuildShardPayload) => client.guilds.cache.get(guildId)?.shard?.send(payload),
     autoSkip: true,
     client: {
         id: config.clientid,
@@ -38,20 +39,20 @@ client.lavalink = new LavalinkManager({
 });
 
 // Event: Handling raw WebSocket events
-client.on("raw", data => {
+client.on("raw", (data: any) => {
     client.lavalink.sendRawData(data); // Passing raw data to lavalink-client   for handling
 });
 
 // Modules for slash commands
 client.commands = new Collection();
-for (folder in cmdfolder){
+for (let folder in cmdfolder){
     console.log(`${cmdfolder[folder]} - Discord`)
     const command = require(`${folderpath}/${cmdfolder[folder]}`)
     client.commands.set(command.data.name, command);
 }
 
 // Slash commands
-client.on(Events.InteractionCreate, async interaction => {
+client.on(Events.InteractionCreate, async (interaction: { isChatInputCommand: () => boolean; client: { commands: { get: (arg0: string) => any; }; }; commandName: string; }) => {
     if (!interaction.isChatInputCommand()){return};
     let command = interaction.client.commands.get(interaction.commandName);
     if (!command){
@@ -61,7 +62,7 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 // Once ready
-client.once(Events.ClientReady, cl => {
+client.once(Events.ClientReady, (cl: any) => {
     client.lavalink.init(client.user);
     // Client presence
     client.user.setPresence({ activities: [{ name: "Ei & Yae Miko in bedsheets", type: ActivityType.Watching }], status: PresenceUpdateStatus.Online })
@@ -69,10 +70,10 @@ client.once(Events.ClientReady, cl => {
 })
 
 // Sending information about currently playing song
-client.lavalink.on("trackStart", (player, track, payload) => {
-    songinfo = new SongInfoExport(player.guildId, track, client).json
+client.lavalink.on("trackStart", (player: { guildId: string; }, track: Track, payload: GuildShardPayload) => {
+    let songinfo = new SongInfoExport(player.guildId, track, client).json
     // send SongInfo to Express (as JSON)
-    client.express.get('/musicinfo', (req, res) =>{
+    client.express.get('/musicinfo', (req: any, res: any) =>{
         res.setHeader('Content-Type', 'application/json');
         res.send(songinfo)
     })
