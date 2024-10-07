@@ -1,8 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const config = require('../config.json')
-const { soundcloud_playlist_regex, soundcloud_track_regex, spotify_playlist_regex, spotify_track_regex, youtube_playlist_regex, youtube_track_regex,} = require('../util/regex.ts')
-let title;
-let artworkurl;
+import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ColorResolvable } from "discord.js";
+import config from '../config.json';
+const { soundcloud_playlist_regex, soundcloud_track_regex, spotify_playlist_regex, spotify_track_regex, youtube_playlist_regex, youtube_track_regex } = require('../util/regex');
+let title: string;
+let artworkurl: string;
 let platform = "ytsearch";
 
 module.exports = {
@@ -15,18 +15,23 @@ module.exports = {
                 .setDescription('link to play')),
     
     async execute(interaction, client) {
+        // defer Reply
+        await interaction.deferReply()
         // Query
         let query = interaction.options.getString("link")
         
         // Checking which search should be used
-        if (query.match(youtube_track_regex) !== null | query.match(youtube_playlist_regex) !== null){
+        if (query.match(youtube_track_regex) !== null || query.match(youtube_playlist_regex) !== null){
             platform = "ytsearch"
-        } else if (query.match(spotify_track_regex) !== null | query.match(spotify_playlist_regex) !== null){
+        } else if (query.match(spotify_track_regex) !== null || query.match(spotify_playlist_regex) !== null){
             platform = "spsearch"
-        } else if (query.match(soundcloud_track_regex) !== null | query.match(soundcloud_playlist_regex) !== null){
+        } else if (query.match(soundcloud_track_regex) !== null || query.match(soundcloud_playlist_regex) !== null){
             platform = "scsearch"
         }
-
+        if(interaction.member.voice.channel === null){
+            await interaction.editReply({ content: "You aren't in a voice channel!", ephemeral: true })
+            return;
+        }
         // Creating a player
         const player = client.lavalink.createPlayer({
             guildId: interaction.guild.id,
@@ -43,7 +48,7 @@ module.exports = {
         const res = await player.search({query: query, source: platform}, interaction.user);
         switch(res.loadType){
             case "empty":
-                interaction.reply({ content: "Empty result from query!", ephemeral: true });
+                await interaction.reply({ content: "Empty result from query!", ephemeral: true });
                 break;
 
             case "track":
@@ -85,17 +90,17 @@ module.exports = {
             .setDescription(title)
             .setThumbnail(`attachment://${filename}`)
             .setImage(artworkurl)
-            .setColor(config.embed_color)
+            .setColor(config.embed_color as ColorResolvable)
             .setFooter({ text: "À Bas l'Etat Policier" })
             .setTimestamp()
         
-            interaction.reply({
+            await interaction.editReply({
                 embeds: [embed],
                 files: [attachment],
             
             }) 
         } catch {
-            interaction.reply(`Playing - ${title} (this is a fallback message, report if it happens)`)
+            await interaction.editReply(`Playing - ${title} (this is a fallback message, report if it happens)`)
         }  
         
     }

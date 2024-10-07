@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder, Embed } = require("discord.js");
-const { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection,  AudioPlayerStatus } = require("@discordjs/voice")
-const config = require('../config.json')
+import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
+
+
 
 module.exports = {
     data: new SlashCommandBuilder()

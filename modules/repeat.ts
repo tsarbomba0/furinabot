@@ -1,5 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js")
-const config = require('../config.json')
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js"
+import config from '../config.json'
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -38,10 +38,10 @@ module.exports = {
                 resp = `Disabled repeat for the current ${interaction.options.getString('type')}`
                 break;
         }
-        console.log(config.embed_color)
+        
         // embed
         const embed = new EmbedBuilder()
-        .setColor(config.embed_color)
+        .setColor(config.embed_color as ColorResolvable)
         .setTitle(resp)
         .setFooter({ text: "Wonderful audience!" })
         .setTimestamp()

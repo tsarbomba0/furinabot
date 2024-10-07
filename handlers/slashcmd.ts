@@ -10,7 +10,7 @@ const folderpath = '../modules'
 const cmdfolder = fs.readdirSync('../modules')
 console.log(cmdfolder)
 
-for (folder in cmdfolder){
+for (let folder in cmdfolder){
     console.log(cmdfolder[folder])
     var command = require(`${folderpath}/${cmdfolder[folder]}`)
     cmds.push(command.data.toJSON());

@@ -1,2 +1,3 @@
 @echo off
-nodemon main.js
+nodemon main.ts
+pause
