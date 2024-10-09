@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ColorResolvable } from "discord.js";
 import config from '../config.json';
-const { soundcloud_playlist_regex, soundcloud_track_regex, spotify_playlist_regex, spotify_track_regex, youtube_playlist_regex, youtube_track_regex } = require('../util/regex');
+const { RegexList } = require('../types/platforms');
 let title: string;
 let artworkurl: string;
 let platform = "ytsearch";
@@ -14,26 +14,28 @@ module.exports = {
                 .setRequired(true)
                 .setDescription('link to play')),
     
-    async execute(interaction, client) {
+    async execute(interaction) {
         // defer Reply
         await interaction.deferReply()
         // Query
         let query = interaction.options.getString("link")
         
         // Checking which search should be used
-        if (query.match(youtube_track_regex) !== null || query.match(youtube_playlist_regex) !== null){
+        if (query.match(RegexList.yt_track) !== null || query.match(RegexList.yt_playlist) !== null){
             platform = "ytsearch"
-        } else if (query.match(spotify_track_regex) !== null || query.match(spotify_playlist_regex) !== null){
+        } else if (query.match(RegexList.sp_playlist) !== null || query.match(RegexList.sp_playlist) !== null){
             platform = "spsearch"
-        } else if (query.match(soundcloud_track_regex) !== null || query.match(soundcloud_playlist_regex) !== null){
+        } else if (query.match(RegexList.sp_playlist) !== null || query.match(RegexList.sp_playlist) !== null){
             platform = "scsearch"
         }
+
         if(interaction.member.voice.channel === null){
             await interaction.editReply({ content: "You aren't in a voice channel!", ephemeral: true })
             return;
         }
+
         // Creating a player
-        const player = client.lavalink.createPlayer({
+        const player = interaction.client.lavalink.createPlayer({
             guildId: interaction.guild.id,
             voiceChannelId: interaction.member.voice.channel.id,
             textChannelId: interaction.channel.id,
@@ -99,7 +101,7 @@ module.exports = {
                 files: [attachment],
             
             }) 
-        } catch {
+        } catch (err) {
             await interaction.editReply(`Playing - ${title} (this is a fallback message, report if it happens)`)
         }  
         

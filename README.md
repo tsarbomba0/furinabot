@@ -5,6 +5,7 @@ A bot early in development named after Furina de Fontaine
 
 - Simple rule34 scraper to display yuri *content* of Furina!
 - Music player bot!
+- Websocket for song information!
 
 ## Requirements
 

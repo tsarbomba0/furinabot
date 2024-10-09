@@ -1,7 +1,5 @@
-import { SlashCommandBuilder, EmbedBuilder } from "discord.js";
-
-
-
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
+import config from '../config.json';
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('pause')
@@ -35,7 +33,7 @@ module.exports = {
         
         // Embed.
         const embed = new EmbedBuilder()
-        .setColor('#000000')
+        .setColor(config.embed_color as ColorResolvable)
         .setTitle(`${title}`)
         .setTimestamp()
         .setFooter({ text: "aux Mac-Mahon, aux Dupanloup"})

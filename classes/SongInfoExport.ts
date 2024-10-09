@@ -1,5 +1,3 @@
-import config from '../config.json';
-
 // Class to export track name, track author, track artwork, track duration, server icon uri and the server name as JSON
 export class SongInfoExport {
     guildid: string;

@@ -1,5 +1,5 @@
 import config from '../config.json';
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, Embed, ColorResolvable } from 'discord.js';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -37,5 +37,18 @@ module.exports = {
             player.queue.add(track)
         });
 
+        // Embed
+        const Embed = new EmbedBuilder()
+        .setColor(config.embed_color as ColorResolvable)
+        .setTitle("Shuffled the queue!")
+        .setTimestamp()
+        .setFooter({ text: "What is this, Mouloudji?"})
+
+        try {
+            await interaction.reply({ embeds: [Embed]})
+        } catch (err){
+            console.log(err)
+            await interaction.reply("Shuffled the playlist! - fallback response!")
+        }
     }
 } 
