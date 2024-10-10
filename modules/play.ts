@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ColorResolvable } from "discord.js";
 import config from '../config.json';
+import { SearchQuery, SearchResult, Track } from "lavalink-client/dist/types";
 const { RegexList } = require('../types/platforms');
 let title: string;
 let artworkurl: string;
@@ -47,32 +48,40 @@ module.exports = {
         player.connect();
 
         // Response and switch case for tracks
-        const res = await player.search({query: query, source: platform}, interaction.user);
-        switch(res.loadType){
-            case "empty":
-                await interaction.reply({ content: "Empty result from query!", ephemeral: true });
-                break;
-
-            case "track":
-            case "search":
-                player.queue.add(res.tracks[0]);
-                artworkurl = res.tracks[0].info.artworkUrl
-                title = res.tracks[0].info.title
-                break;
-
-            case "playlist":
-                res.tracks.forEach(track => {
-                    player.queue.add(track);
-                });
-                artworkurl = res.playlist.thumbnail
-                title = res.playlist.title
-                break;
-
-            default:
-            case "error":
-                interaction.reply({ content: "An error occured!", ephemeral: true });
-                return;
-                break;
+        let res: SearchResult;
+        
+        
+        try {
+            res = await player.search({query: query, source: platform}, interaction.user);
+            switch(res.loadType){
+                case "empty":
+                    await interaction.reply({ content: "Empty result from query!", ephemeral: true });
+                    break;
+    
+                case "track":
+                case "search":
+                    player.queue.add(res.tracks[0]);
+                    artworkurl = res.tracks[0].info.artworkUrl
+                    title = res.tracks[0].info.title
+                    break;
+    
+                case "playlist":
+                    res.tracks.forEach(track => {
+                        player.queue.add(track);
+                    });
+                    artworkurl = res.playlist.thumbnail
+                    title = res.playlist.title
+                    break;
+    
+                default:
+                case "error":
+                    interaction.reply({ content: "An error occured!", ephemeral: true });
+                    return;
+                    break;
+            }
+        } catch (err){
+            console.log(err)
+            await interaction.editReply({ content: "Something went wrong during the search!", ephemeral: true })
         }
         
         // Playing if the player isn't currently playing 

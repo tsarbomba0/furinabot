@@ -26,7 +26,7 @@ client.lavalink = new LavalinkManager({
     autoSkip: true,
     client: {
         id: config.clientid,
-        username: "Furina",
+        username: "furina",
     },
 });
 

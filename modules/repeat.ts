@@ -14,7 +14,7 @@ module.exports = {
         )
         .setRequired(true)),
     async execute(interaction){
-        var resp = ""
+        let resp = ""
         const player = interaction.client.lavalink.getPlayer(interaction.guild.id)
 
         // Exits if there is no player object
@@ -24,18 +24,16 @@ module.exports = {
         }
 
         // switch case for player repeatMode from lavalink-client
+        let repeat_type = interaction.options.getString('type')
         switch(player.repeatMode){
             case "off": 
-                await player.setRepeatMode(interaction.options.getString('type'))
-                resp = `Enabled repeat for the current ${interaction.options.getString('type')}`
+                await player.setRepeatMode(repeat_type)
+                resp = `Enabled repeat for the current ${repeat_type}`
                 break;
             case "track":
-                await player.setRepeatMode('off')
-                resp = `Disabled repeat for the current ${interaction.options.getString('type')}`
-                break;
             case "queue":
                 await player.setRepeatMode('off')
-                resp = `Disabled repeat for the current ${interaction.options.getString('type')}`
+                resp = `Disabled repeat for the current ${repeat_type}`
                 break;
         }
         

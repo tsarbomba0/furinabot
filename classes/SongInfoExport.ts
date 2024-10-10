@@ -23,6 +23,7 @@ export class SongInfoExport {
             trackDuration: this.track.info.duration,
             serverIconUrl: `https://cdn.discordapp.com/icons/${this.guildid}/${guild.icon}.png`,
             serverName: `${guild.name}`,
+            serverId: `${this.guildid}`
         })
     }
 }
