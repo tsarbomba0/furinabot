@@ -49,4 +49,4 @@ modules(client);
 interaction_handler(client);
 
 // Login
-client.login(`${process.env.CLIENTID}`)
+client.login(`${process.env.TOKEN}`)
