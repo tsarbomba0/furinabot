@@ -1,0 +1,28 @@
+{
+  "name": "furinabot",
+  "version": "1.0.0",
+  "description": "Music bot for Discord",
+  "main": "main.ts",
+  "scripts": {
+    "build": "npm i discord.js ts-node xml2js axios lavalink-client",
+    "run": "ts-node main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsarbomba0/furinabot.git"
+  },
+  "keywords": [
+    "discord",
+    "music",
+    "bot",
+    "discordjs",
+    "discordbot",
+    "typescript"
+  ],
+  "author": "Tsar Bomba",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsarbomba0/furinabot/issues"
+  },
+  "homepage": "https://github.com/tsarbomba0/furinabot#readme"
+}
