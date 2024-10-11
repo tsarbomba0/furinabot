@@ -4,7 +4,8 @@ import { GuildShardPayload, LavalinkManager } from "lavalink-client";
 import { modules, interaction_handler } from './handlers/command_handler';
 import track_websocket from './websocket/websocket';
 require('dotenv').config()
-
+import { MongoClient } from "mongodb"
+const mongodb_uri = "mongodb+srv://<db_username>:<db_password>@cluster0.9ph1h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 // Client
 const client = new Client({ intents: [GatewayIntentBits.Guilds,
@@ -13,6 +14,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
 ]}) as any
+
+// MongoDB client
+client.mongodb = new MongoClient(mongodb_uri);
+
 
 // Manager
 client.lavalink = new LavalinkManager({

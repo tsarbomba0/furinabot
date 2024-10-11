@@ -1,8 +1,9 @@
-const mongodb_uri = "mongodb+srv://weatherUser:Auchampsdumars@cluster0.9ph1h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-import { MongoClient } from "mongodb"
-const mongodb = new MongoClient(mongodb_uri);
+import { MongoClient } from "mongodb";
 
-export async function read(mongoclient, query){
+require('dotenv').config()
+
+// Read for MongoDB
+export async function read(mongoclient: MongoClient, query: Object){
     try {
         await mongoclient.connect();
         let db = mongoclient.db('furina_bot_data')
@@ -14,23 +15,32 @@ export async function read(mongoclient, query){
         console.log(err)
     }
 }
-export async function write(mongoclient, query, data){
+
+// Upsort for MongoDB
+export async function upsort(mongoclient: MongoClient, query: Object, data: Object){
     try {
         await mongoclient.connect();
         let db = mongoclient.db('furina_bot_data')
         let col = db.collection('perms')
         await col.updateOne(query, data, {upsert: true});
     } catch (err){
-        console.log("An error occured with reading from MongoDB!")
+        console.log("An error occured with writing (upsort) to MongoDB!")
         console.log(err)
     }
 }
 
-let query = { city: "TESTCITY"}
-async function main(){
-    let guildid = { "guildid": "1" }
-    let play = { "play": "123" }
-    write(mongodb, guildid, { $set: play })
+// Clear a entry in MongoDB
+export async function clear(mongoclient: MongoClient, query: Object, entry: String) {
+    try {
+        await mongoclient.connect();
+        let db = mongoclient.db('furina_bot_data')
+        let col = db.collection('perms')
+        await col.updateOne(query, { entry: ""});
+    } catch (err){
+        console.log("An error occured with clearing a entry on MongoDB!")
+        console.log(err)
+    }
 }
-main();
+
+
 

@@ -1,7 +1,12 @@
 import { REST, Routes } from 'discord.js';
-import { clientid, token } from '../config.json';
+import { clientid } from '../config.json';
+import { exit } from 'process';
 
-const rest = new REST().setToken(token);
+if (process.argv.length < 3){
+	console.log("need a token argument!")
+	exit();
+}
+const rest = new REST().setToken(process.argv[2]);
 
 // for guild-based commands
 /*

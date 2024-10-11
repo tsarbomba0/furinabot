@@ -4,7 +4,7 @@
   "description": "Music bot for Discord",
   "main": "main.ts",
   "scripts": {
-    "build": "npm i discord.js ts-node xml2js axios lavalink-client dotenv ws",
+    "build": "npm i discord.js ts-node xml2js axios lavalink-client dotenv ws mongodb",
     "run": "ts-node main.ts"
   },
   "repository": {
@@ -24,5 +24,9 @@
   "bugs": {
     "url": "https://github.com/tsarbomba0/furinabot/issues"
   },
-  "homepage": "https://github.com/tsarbomba0/furinabot#readme"
+  "homepage": "https://github.com/tsarbomba0/furinabot#readme",
+  "dependencies": {
+    "mongoclient": "^1.0.3",
+    "mongodb": "^6.9.0"
+  }
 }

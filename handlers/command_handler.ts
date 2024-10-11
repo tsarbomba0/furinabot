@@ -18,6 +18,7 @@ for (let folder in cmdfolder){
 export function interaction_handler(client){
     client.on(Events.InteractionCreate, async (interaction: { isChatInputCommand: () => boolean; client: { commands: { get: (arg0: string) => any; }; }; commandName: string; }) => {
         if (!interaction.isChatInputCommand()){return};
+        console.log(interaction)
         let command = interaction.client.commands.get(interaction.commandName);
         if (!command){
             console.log(`Did not find: ${interaction.commandName} !`)

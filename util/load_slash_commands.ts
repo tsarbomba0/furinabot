@@ -3,7 +3,13 @@ const { REST, Routes } = require('discord.js');
 const { clientid, guildid, token } = require('../config.json');
 const fs = require('node:fs');
 const path = require('node:path');
-const rest = new REST().setToken(token)
+import { exit } from 'process'
+
+if (process.argv.length < 3){
+	console.log("need a token argument!")
+	exit();
+}
+const rest = new REST().setToken(process.argv[2]);
 
 const cmds = [];
 const folderpath = '../modules'
