@@ -19,7 +19,7 @@ export async function upsort(mongoclient: MongoClient, query: Object, data: Obje
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
         let col = database.collection('perms')
-        await col.updateOne(query, data, {upsert: true});
+        await col.updateOne(query, {$set: data}, {upsert: true});
     } catch (err){
         console.log("An error occured with writing (upsort) to MongoDB!")
         console.log(err)
@@ -32,7 +32,7 @@ export async function clear(mongoclient: MongoClient, query: Object, entry: Stri
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
         let col = database.collection('perms')
-        await col.updateOne(query, { entry: ""});
+        await col.updateOne(query, { $set: { entry: ""} });
     } catch (err){
         console.log("An error occured with clearing a entry on MongoDB!")
         console.log(err)
