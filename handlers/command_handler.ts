@@ -49,16 +49,17 @@ export function interaction_handler(client){
         // Allowed role id array for command
         let role_ids: Array<string> = query[`${command.data.name}`].split(',')
 
-        // Get all roles of user
+        // Check if user is allowed to execute command
+        let allowedRole = false
         let user = interaction.guild.members.cache.get(interaction.user.id)
-        var allowedRole = false;
-        user.roles.cache.map(role => {
-            if(role_ids.includes(role.id) && allowedRole !== true){
+        for (let role of user.roles.cache){
+            if(role_ids.includes(role[0])){
                 allowedRole = true;
+                break;
             }
-        })
+        }
 
-        // Exit if u ser doesn't have any roles that allow for execution of given command
+        // Exit if user doesn't have any roles that allow for execution of given command
         if (!allowedRole && interaction.user.id !== interaction.guild.ownerId){
             await interaction.reply({ content: "You are not allowed to use this command!", ephemeral: true })
             return;
