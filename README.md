@@ -25,6 +25,16 @@ the MongoDB login info resides as
 
 the rest of the configuration, like client id, embed colors and additional stuff is present in config.json as a JSON object
 
+## Permissions
+The bot uses a slash command to write which roles (their ids) can use a given command.
+if no role id is present for a command or the user doesn't have any of the roles that are set for the command, the bot doesn't execute them
+if the user is a owner it allows them to execute commands regardless.
+
+dbwrite command usage:
+`/dbwrite <commandName> <roles>`
+Example:
+`/dbwrite yuri Admin,Moderator`
+
 ## Credit
 - music player icons from Icons8 
 

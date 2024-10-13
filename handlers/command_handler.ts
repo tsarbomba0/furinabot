@@ -2,7 +2,8 @@ import { Events, Collection } from 'discord.js';
 import fs from 'node:fs';
 const folderpath = '../modules'
 const cmdfolder = fs.readdirSync('./modules')
-import { read } from '../util/mongodb'
+import { dbfind, read } from '../util/mongodb'
+import { MongoClient } from 'mongodb';
 
 // Modules for slash commands
 export function modules(client){
@@ -19,18 +20,50 @@ for (let folder in cmdfolder){
 export function interaction_handler(client){
     client.on(Events.InteractionCreate, async (interaction) => {
         if (!interaction.isChatInputCommand()){return};
-        let query = await read(client.mongodb, { guildid: interaction.guild.id })
-        console.log(query) 
-            /*
-            Plan:
-            read command name and query to mongodb
-            check if user has any of the allowed roles
-            */
-        
         let command = interaction.client.commands.get(interaction.commandName);
         if (!command){
             console.log(`Did not find: ${interaction.commandName} !`)
+            return;
         }
+
+        // Query options
+        let projection: Object = { _id: 0 }
+        projection[command.data.name] = 1
+        let options: Object = {
+            sort: {},
+            projection
+        }
+        
+        // Query object
+        let query_obj: Object = {}
+        query_obj[command.data.name] = { '$exists': 'true' }
+        query_obj['guildid'] = interaction.guild.id 
+        let query: Object = await dbfind(client.mongodb, { 'guildid': interaction.guild.id }, options)
+
+        // Check if query is null
+        if (query === null && interaction.user.id !== interaction.guild.ownerId){
+            await interaction.reply({ content: "There are no permissions configured for this command!", ephemeral: true});
+            return;
+        }
+
+        // Allowed role id array for command
+        let role_ids: Array<string> = query[`${command.data.name}`].split(',')
+
+        // Get all roles of user
+        let user = interaction.guild.members.cache.get(interaction.user.id)
+        var allowedRole = false;
+        user.roles.cache.map(role => {
+            if(role_ids.includes(role.id) && allowedRole !== true){
+                allowedRole = true;
+            }
+        })
+
+        // Exit if u ser doesn't have any roles that allow for execution of given command
+        if (!allowedRole && interaction.user.id !== interaction.guild.ownerId){
+            await interaction.reply({ content: "You are not allowed to use this command!", ephemeral: true })
+            return;
+        }    
+        
         await command.execute(interaction)
     });
 }

@@ -39,5 +39,19 @@ export async function clear(mongoclient: MongoClient, query: Object, entry: Stri
     }
 }
 
+// Find 
+export async function dbfind(mongoclient: MongoClient, query: Object, options: Object) {
+    try {
+        await mongoclient.connect();
+        let database = mongoclient.db('furina_bot_data')
+        let col = database.collection('perms')  
+        let response = await col.findOne(query, options)
+        return response;
+    } catch (err){
+        console.log("An error occured with finding a entry on MongoDB!")
+        console.log(err)
+    }
+}
+
 
 
