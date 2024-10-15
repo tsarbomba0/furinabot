@@ -66,7 +66,7 @@ module.exports = {
                 return;
             }
             // response from API regarding a query for charname and the taglist
-            response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${charname}${taglist}+-ai_generated`) // maybe cache using hash?
+            response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${charname}${taglist}+-ai_generated `) // maybe cache using hash?
             // random post from array
             let random_post = response.data[Math.floor(response.data.length * Math.random())]
             console.log(random_post.file_url)

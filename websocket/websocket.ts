@@ -1,4 +1,4 @@
-import WebSocket, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import { Player, Track } from 'lavalink-client'
 import { SongInfoExport } from '../classes/SongInfoExport'
 

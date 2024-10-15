@@ -63,7 +63,7 @@ module.exports = {
         })
         .catch(err => console.log(err))
         // reply
-        await interaction.reply({ content: `Done! Set permissions for /${command}`, ephemeral: true})
+        await interaction.reply({ content: `Done! Set permissions for /${command}`, ephemeral: true}) 
         
             
 

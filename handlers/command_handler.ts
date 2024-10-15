@@ -2,8 +2,8 @@ import { Events, Collection } from 'discord.js';
 import fs from 'node:fs';
 const folderpath = '../modules'
 const cmdfolder = fs.readdirSync('./modules')
-import { dbfind, read } from '../util/mongodb'
-import { MongoClient } from 'mongodb';
+import { dbfind } from '../util/mongodb'
+
 
 // Modules for slash commands
 export function modules(client){
@@ -40,14 +40,20 @@ export function interaction_handler(client){
         query_obj['guildid'] = interaction.guild.id 
         let query: Object = await dbfind(client.mongodb, { 'guildid': interaction.guild.id }, options)
 
-        // Check if query is null
-        if (query === null && interaction.user.id !== interaction.guild.ownerId){
+        // Check if query is empty
+        let role_ids: Array<string> // role id array
+        if (!(Object.keys(query).length === 0)){
+            role_ids = query[`${command.data.name}`].split(',') // Allowed role id array for command
+        } else if (interaction.user.id !== interaction.guild.ownerId || interaction.user.id !== "416621261930627073"){
+            role_ids = [] // Empty if user is a owner or a special one (ME)
+        } else {
             await interaction.reply({ content: "There are no permissions configured for this command!", ephemeral: true});
             return;
         }
 
-        // Allowed role id array for command
-        let role_ids: Array<string> = query[`${command.data.name}`].split(',')
+        
+         
+        
 
         // Check if user is allowed to execute command
         let allowedRole = false
@@ -60,7 +66,7 @@ export function interaction_handler(client){
         }
 
         // Exit if user doesn't have any roles that allow for execution of given command
-        if (!allowedRole && interaction.user.id !== interaction.guild.ownerId){
+        if (!allowedRole && interaction.user.id !== interaction.guild.ownerId && interaction.user.id !== "416621261930627073"){
             await interaction.reply({ content: "You are not allowed to use this command!", ephemeral: true })
             return;
         }    
