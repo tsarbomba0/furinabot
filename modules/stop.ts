@@ -7,10 +7,18 @@ module.exports = {
     .setDescription('Stops the player!'),
 
     async execute(interaction){
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         const player = interaction.client.lavalink.getPlayer(interaction.guild.id)
         if(player && interaction.member.voice.channel.id === player.voiceChannelId){
             player.destroy()
-            await interaction.reply({ embeds: [
+            await interaction.editReply({ embeds: [
                 new EmbedBuilder()
             .setTitle("Stopped!")
             .setDescription("Stopped the music player, and disconnected the bot from the channel!")
@@ -19,7 +27,7 @@ module.exports = {
             .setTimestamp()
             ]})
         } else if (!player){
-            await interaction.reply({ embeds: [
+            await interaction.editReply({ embeds: [
                 new EmbedBuilder()
                 .setTitle("No music player to be stopped!")
                 .setColor(config.embed_color  as ColorResolvable)

@@ -17,6 +17,14 @@ module.exports = {
             return;
         }
 
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         // All tracks
         let entire_queue = player.queue.previous.concat(player.queue.tracks, player.queue.current)
 
@@ -45,10 +53,10 @@ module.exports = {
         .setFooter({ text: "What is this, Mouloudji?"})
 
         try {
-            await interaction.reply({ embeds: [Embed]})
+            await interaction.editReply({ embeds: [Embed]})
         } catch (err){
             console.log(err)
-            await interaction.reply("Shuffled the playlist! - fallback response!")
+            await interaction.editReply("Shuffled the playlist! - fallback response!")
         }
     }
 } 

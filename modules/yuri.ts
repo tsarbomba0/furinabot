@@ -27,7 +27,12 @@ module.exports = {
         let taglist = "";
 
         // defer reply
-        await interaction.deferReply()
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
 
         // Append tags to one string
         if (!(tags === null)){

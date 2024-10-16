@@ -16,8 +16,15 @@ module.exports = {
                 .setDescription('link to play')),
     
     async execute(interaction) {
-        // defer Reply
-        await interaction.deferReply()
+
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         // Query
         let query = interaction.options.getString("link")
         
@@ -55,7 +62,7 @@ module.exports = {
             res = await player.search({query: query, source: platform}, interaction.user);
             switch(res.loadType){
                 case "empty":
-                    await interaction.reply({ content: "Empty result from query!", ephemeral: true });
+                    await interaction.editReply({ content: "Empty result from query!", ephemeral: true });
                     break;
     
                 case "track":
@@ -75,7 +82,7 @@ module.exports = {
     
                 default:
                 case "error":
-                    interaction.reply({ content: "An error occured!", ephemeral: true });
+                    interaction.editReply({ content: "An error occured!", ephemeral: true });
                     return;
                     break;
             }

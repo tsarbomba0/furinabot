@@ -26,6 +26,14 @@ module.exports = {
         let role_ids: Array<string> = [];
         let cmd_dir: Array<string> = fs.readdirSync('./modules')
 
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         // Check if command is present (if not, return)
         if (!cmd_dir.includes(`${command}.ts`)){
             interaction.reply({ content: "This command doesn't exist", ephemeral: true})
@@ -63,7 +71,7 @@ module.exports = {
         })
         .catch(err => console.log(err))
         // reply
-        await interaction.reply({ content: `Done! Set permissions for /${command}`, ephemeral: true}) 
+        await interaction.editReply({ content: `Done! Set permissions for /${command}`, ephemeral: true}) 
         
             
 

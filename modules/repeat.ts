@@ -17,6 +17,14 @@ module.exports = {
         let resp = ""
         const player = interaction.client.lavalink.getPlayer(interaction.guild.id)
 
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         // Exits if there is no player object
         if(!player){
             interaction.reply({ content: "There is no player active!", ephemeral: true});
@@ -45,7 +53,7 @@ module.exports = {
         .setTimestamp()
         
         // reply
-        interaction.reply({ embeds: [embed]} )
+        interaction.editReply({ embeds: [embed]} )
         
 
 

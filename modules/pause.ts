@@ -6,11 +6,19 @@ module.exports = {
     .setDescription('Pauses or unpauses the bot'),
     async execute(interaction){
         var title = "";
+
+        // defer reply
+        try {
+            await interaction.deferReply()
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
         
         // If there is no player it just quits.
         if(interaction.client.lavalink.getPlayer(interaction.guild.id) === undefined){
-            console.log("No player!")
-            return 0;
+            interaction.editReply({ content: "Bot is not connected to any voice channel", ephemeral: true})
+            return;
         } 
 
         // player variable
@@ -18,8 +26,8 @@ module.exports = {
 
         // Logic to check if the player is connected.
         if(!player.connected){
-            console.log("Player not connected!")
-            return 0
+            interaction.editReply({ content: "Bot is not connected to any voice channel", ephemeral: true})
+            return;
         }
 
         // Logic to check if player is paused or not.
@@ -38,7 +46,7 @@ module.exports = {
         .setTimestamp()
         .setFooter({ text: "aux Mac-Mahon, aux Dupanloup"})
 
-        await interaction.reply({embeds: [embed]})
+        await interaction.editReply({embeds: [embed]})
     },
    
 }

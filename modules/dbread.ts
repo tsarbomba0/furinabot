@@ -14,6 +14,14 @@ module.exports = {
     async execute(interaction){
         let commandName = interaction.options.getString('command')
 
+        // defer reply
+        try {
+            await interaction.deferReply({ ephemeral: true })
+        } catch (err) {
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
+            return;
+        }
+
         // Projection for MongoDB, show only the queried command as response
         let projection = {
             _id: 0
@@ -28,7 +36,8 @@ module.exports = {
         
         // Check if any roles were set
         if(Object.keys(query).length === 0){
-            await interaction.reply({ content: "No allowed roles set for this command!", ephemeral: true})
+            await interaction.editReply({ content: "No allowed roles set for this command!" })
+            return;
         } else {
             // Evaluate roles from ids id -> role name from cache
             let roleIDArray: Array<string> = Object.values(query)[0].split(',');
@@ -53,7 +62,7 @@ module.exports = {
             .setFooter({ text: "Hell yeah!"})
 
             // Reply
-            await interaction.reply({ embeds: [Embed], ephemeral: true})
+            await interaction.editReply({ embeds: [Embed], ephemeral: true})
         }
     }
 }
