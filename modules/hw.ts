@@ -19,16 +19,15 @@ module.exports = {
     ),
     async execute(interaction){
         // variables
-        let victim = interaction.options.getString('victim').toLowerCase()
-        let tags = interaction.options.getString('tags')
-        let taglist = "";
+        let victim: string = interaction.options.getString('victim').toLowerCase()
+        let tags: string = interaction.options.getString('tags')
+        let taglist: string = "";
 
         // defer reply
         try {
             await interaction.deferReply()
         } catch (err) {
-            //await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
-            console.log("uhh!")
+            await interaction.reply({ content: "Something really went wrong!", ephemeral: true})
             return;
         }
 
@@ -54,12 +53,15 @@ module.exports = {
         const parsed_xml = cheerio.load(data, {
             xml: true
         })
+        if(parsed_xml('tags').get().length === 0){
+            await interaction.editReply({ content: "Couldn't find that!" })
+            return;
+        }
         parsed_xml('tags').get().map(async(arg) =>{
             let highestCount = 0;
             let highestCountTag: string;
             arg.children.forEach(element => {
                 if(element.attribs){
-                    console.log(`${element.attribs.name}, ${element.attribs.count}`)
                     if(element.attribs.count > highestCount){
                         highestCount = element.attribs.count
                         highestCountTag = element.attribs.name
@@ -68,9 +70,14 @@ module.exports = {
                 }
             })
             response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${highestCountTag}${taglist}+-ai_generated+-video `) // maybe cache using hash?
+            
+            if(!response.data){
+                await interaction.editReply({ content: "Couldn't find that!" })
+                return;
+            }
             // random post from array
             let random_post = response.data[Math.floor(response.data.length * Math.random())]
-
+            
             // debug for later
             console.log(random_post)
             console.log(random_post.file_url)
@@ -84,8 +91,6 @@ module.exports = {
                 .setImage(random_post.file_url)
             if(tags !== null)Embed.setDescription(`Tags: ${tags}`) // if tags are null (no tags typed in), doesn't add a description
             await interaction.editReply({ embeds: [Embed]}) // edits the deferred reply
-            return;
         })
-        await interaction.editReply({ content: "Couldn't find that!" }) 
     } 
 }
