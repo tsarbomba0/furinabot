@@ -4,7 +4,7 @@
   "description": "Music bot for Discord",
   "main": "main.ts",
   "scripts": {
-    "build": "npm i discord.js ts-node xml2js axios lavalink-client dotenv ws mongodb",
+    "build": "npm i discord.js ts-node cheerio axios lavalink-client dotenv ws mongodb",
     "run": "ts-node main.ts"
   },
   "repository": {

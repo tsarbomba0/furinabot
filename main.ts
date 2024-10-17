@@ -5,10 +5,12 @@ import { modules, interaction_handler } from './handlers/command_handler';
 import track_websocket from './websocket/websocket';
 require('dotenv').config()
 import { MongoClient } from "mongodb"
+import count_xp from './xp/xp_handler'
+import { count } from 'console';
 
 
 // Discord.js client
-const client = new Client({ intents: [GatewayIntentBits.Guilds,
+export const client = new Client({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
@@ -23,8 +25,8 @@ client.mongodb = new MongoClient(mongodb_uri);
 client.lavalink = new LavalinkManager({
     nodes: [{
         id: "node_1",
-        host: "localhost",
-        port: 2333,
+        host: "node.lewdhutao.my.eu.org",
+        port: 80,
         authorization: "youshallnotpass",
     }],
     sendToShard: (guildId: string, payload: GuildShardPayload) => client.guilds.cache.get(guildId)?.shard?.send(payload),
@@ -52,6 +54,7 @@ client.once(Events.ClientReady, (cl: any) => {
 track_websocket(client);
 modules(client);
 interaction_handler(client);
+count_xp(client)
 
 // Login
 client.login(`${process.env.TOKEN}`)

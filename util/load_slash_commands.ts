@@ -2,7 +2,6 @@
 const { REST, Routes } = require('discord.js');
 const { clientid, guildid, token } = require('../config.json');
 const fs = require('node:fs');
-const path = require('node:path');
 import { exit } from 'process'
 
 if (process.argv.length < 3){
