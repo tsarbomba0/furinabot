@@ -35,6 +35,20 @@ dbwrite command usage:
 Example:
 `/dbwrite yuri Admin,Moderator`
 
+## XP
+The bot possesses a XP system with a cooldown of (by default) 20 seconds (can be changed)
+Awards a user 25 xp per written message
+Formula for the levels is `(currentLevel+1)^2 + 100`
+
+The levels are stored using MongoDB using the 'format':
+```
+<guildid>
+<playerid1>:
+    xp: <xpNumber>
+    level: <levelNumber>
+<playerid2>
+    ... etc.
+```
 ## Credit
 - music player icons from Icons8 
 
