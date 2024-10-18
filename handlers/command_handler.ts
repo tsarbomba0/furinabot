@@ -25,6 +25,7 @@ export function interaction_handler(client){
             console.log(`Did not find: ${interaction.commandName} !`)
             return;
         }
+        
 
         // Query options
         let projection: Object = { _id: 0 }
@@ -38,8 +39,9 @@ export function interaction_handler(client){
         let query_obj: Object = {}
         query_obj[command.data.name] = { '$exists': 'true' }
         query_obj['guildid'] = interaction.guild.id 
-        let query: Object = await dbfind(client.mongodb, { 'guildid': interaction.guild.id }, options)
-
+        let query: Object = await dbfind('perms', client.mongodb, { 'guildid': interaction.guild.id }, options)
+        query = query ? query : {}
+        console.log(query)
         // Check if query is empty
         let role_ids: Array<string> // role id array
         if (!(Object.keys(query).length === 0)){

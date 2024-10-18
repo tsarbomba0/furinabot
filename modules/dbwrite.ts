@@ -62,7 +62,7 @@ module.exports = {
             data[`${command}`] = `${role_ids.toString()}`
             console.log(data)
             try {
-                upsort(mongoclient, { guildid: interaction.guild.id }, data)
+                upsort('perms', mongoclient, { guildid: interaction.guild.id }, data)
             } catch (err){
                 console.log(err)
                 interaction.reply({ content: "An error occured!", ephemeral: true})

@@ -32,7 +32,7 @@ module.exports = {
         let query_options = {
             projection
         }
-        let query = await dbfind(interaction.client.mongodb, { guildid: interaction.guild.id }, query_options)
+        let query = await dbfind('perms', interaction.client.mongodb, { guildid: interaction.guild.id }, query_options)
         
         // Check if any roles were set
         if(Object.keys(query).length === 0){

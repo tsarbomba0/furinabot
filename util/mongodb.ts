@@ -1,10 +1,10 @@
 import { MongoClient } from "mongodb";
 // Read from MongoDB
-export async function read(mongoclient: MongoClient, query: Object){
+export async function dbread(coll, mongoclient: MongoClient, query: Object){
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data') 
-        let col = database.collection('perms')
+        let col = database.collection(coll)
         let result = await col.findOne(query)
         return result
     } catch (err){
@@ -14,11 +14,11 @@ export async function read(mongoclient: MongoClient, query: Object){
 }
 
 // Upsort for MongoDB
-export async function upsort(mongoclient: MongoClient, query: Object, data: Object){
+export async function upsort(coll, mongoclient: MongoClient, query: Object, data: Object){
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
-        let col = database.collection('perms')
+        let col = database.collection(coll)
         await col.updateOne(query, {$set: data}, {upsert: true});
     } catch (err){
         console.log("An error occured with writing (upsort) to MongoDB!")
@@ -27,11 +27,11 @@ export async function upsort(mongoclient: MongoClient, query: Object, data: Obje
 }
 
 // Clear a entry in MongoDB
-export async function clear(mongoclient: MongoClient, query: Object, entry: String) {
+export async function clear(coll, mongoclient: MongoClient, query: Object, entry: String) {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
-        let col = database.collection('perms')
+        let col = database.collection(coll)
         await col.updateOne(query, { $set: { entry: ""} });
     } catch (err){
         console.log("An error occured with clearing a entry on MongoDB!")
@@ -40,11 +40,11 @@ export async function clear(mongoclient: MongoClient, query: Object, entry: Stri
 }
 
 // Find 
-export async function dbfind(mongoclient: MongoClient, query: Object, options: Object) {
+export async function dbfind(coll, mongoclient: MongoClient, query: Object, options: Object) {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
-        let col = database.collection('perms')  
+        let col = database.collection(coll)  
         let response = await col.findOne(query, options)
         return response;
     } catch (err){
