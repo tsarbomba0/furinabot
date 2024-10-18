@@ -1,12 +1,13 @@
 import { Events } from 'discord.js'
 import { dbfind, upsort } from '../util/mongodb';
+import { xpcalc } from './xp_calc';
 
 // Variables
 let cooldownIds: Array<string> = [];
 let timeoutCreated = false;
 let timeoutCooldownId: string;
 const givenXP = 25;
-const milisecondsCooldown = 10000;
+const milisecondsCooldown = 20000;
 
 export default function count_xp(client){
     client.on(Events.MessageCreate, async (message) => {
@@ -26,23 +27,42 @@ export default function count_xp(client){
 
         // if statement checks if cooldownId is present in the array
         if(!cooldownIds.includes(cooldownId)){
-            let data = {};
+            let data = {}; // Empty data object
 
-            let projection = { _id: 0}
+            // Projection for MongoDB, only show field with <userId>
+            let projection = { _id: 0 }
             projection[userId] = 1
 
-            let currentXp: Object = await dbfind('exp', client.mongodb, { guildid: guildId }, {projection})
-            currentXp = currentXp ? currentXp : {}
+            // Current
+            let userData: Object = await dbfind('exp', client.mongodb, { guildid: guildId }, {projection})
+            userData = userData ? userData : {} // if null, change to empty object
 
-            if(Object.keys(currentXp).length === 0){
-                data[userId] = givenXP
+            if(Object.keys(userData).length === 0){
+                // if there is no value for a userid/guild or both, insert a new one with level 0 and the base amount of xp
+                data[userId] = {
+                    xp: givenXP,
+                    level: 0
+                }
                 upsort('exp', client.mongodb, { guildid: guildId }, data)
             } else {
-                data[userId] = Object.values(currentXp)[0] + givenXP
+                // Variables, levelObjectValues => object from userId 
+                let levelObjectValues: Object = Object.values(userData)[0]
+                let xpNumber = Number(Object.values(levelObjectValues)[0]) // first property of the object
+                let level = Number(Object.values(levelObjectValues)[1]) // second property ^
+                let newXp = xpNumber+givenXP // current XP + the XP value added 
+                
+                // data object to upsert into MongoDB 
+                data[userId] = {
+                    xp: xpNumber+givenXP, 
+                    level: xpcalc(newXp, level) //xpcalc calculates if the user has gotten a level up or not, returns new level or the same one.
+                }
+                
+                // Upsort
                 upsort('exp', client.mongodb, { guildid: guildId }, data)
+                
             }
 
-
+ 
             // if not it pushes it to the array
             cooldownIds.push(cooldownId)
             // checks if a setTimeout was already triggered and if the timeout has the same id as the cooldown
@@ -55,9 +75,8 @@ export default function count_xp(client){
 
                 // setTimeout function 
                 setTimeout(function(){
-                    console.log("Assez de sang!")
                     //cooldownIds.splice(cooldownId.indexOf(cooldownId), 1); // remove cooldownId from array
-                    cooldownIds = cooldownIds.filter(id => id !== cooldownId)
+                    cooldownIds = cooldownIds.filter(id => id !== cooldownId) // uses .filter to remove duplicates in case of some lag
                     console.log(cooldownIds) // debug
                     timeoutCreated = false; // set timeoutCreated to false, as it now ended
                     timeoutCooldownId = '0' // set timeoutCooldownId as 0 (string), ^

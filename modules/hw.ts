@@ -77,6 +77,9 @@ module.exports = {
             }
             // random post from array
             let random_post = response.data[Math.floor(response.data.length * Math.random())]
+            if(!random_post.file_url){
+                random_post = response.data[Math.floor(response.data.length * Math.random())]
+            }
             
             // debug for later
             console.log(random_post)
