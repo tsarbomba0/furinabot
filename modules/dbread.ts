@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, Embed, ColorResolvable } from "discord.js";
-import { dbfind } from '../util/mongodb'
+import { dbfind } from '../util/mongodb_wrapper'
 const config = require('../config.json')
 
 module.exports = {

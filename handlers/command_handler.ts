@@ -2,7 +2,7 @@ import { Events, Collection } from 'discord.js';
 import fs from 'node:fs';
 const folderpath = '../modules'
 const cmdfolder = fs.readdirSync('./modules')
-import { dbfind } from '../util/mongodb'
+import { dbfind } from '../util/mongodb_wrapper'
 
 
 // Modules for slash commands

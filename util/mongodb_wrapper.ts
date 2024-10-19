@@ -1,6 +1,6 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, WithId } from "mongodb";
 // Read from MongoDB
-export async function dbread(coll, mongoclient: MongoClient, query: Object){
+export async function dbread(coll: string, mongoclient: MongoClient, query: object): Promise<object> {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data') 
@@ -14,7 +14,7 @@ export async function dbread(coll, mongoclient: MongoClient, query: Object){
 }
 
 // Upsort for MongoDB
-export async function upsort(coll, mongoclient: MongoClient, query: Object, data: Object){
+export async function upsort(coll: string, mongoclient: MongoClient, query: object, data: object): Promise<void> {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
@@ -27,20 +27,24 @@ export async function upsort(coll, mongoclient: MongoClient, query: Object, data
 }
 
 // Clear a entry in MongoDB
-export async function clear(coll, mongoclient: MongoClient, query: Object, entry: String) {
+export async function dbclear(coll: string, mongoclient: MongoClient, query: object, entry: string): Promise<void> {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
         let col = database.collection(coll)
-        await col.updateOne(query, { $set: { entry: ""} });
+
+        let obj = {};
+        obj[entry] = ""
+
+        await col.updateOne(query, { $set: obj });
     } catch (err){
-        console.log("An error occured with clearing a entry on MongoDB!")
+        console.log("An error occured with clearing an entry on MongoDB!")
         console.log(err)
     }
 }
 
 // Find 
-export async function dbfind(coll, mongoclient: MongoClient, query: Object, options: Object) {
+export async function dbfind(coll: string, mongoclient: MongoClient, query: object, options: object): Promise<object> {
     try {
         await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
@@ -48,7 +52,7 @@ export async function dbfind(coll, mongoclient: MongoClient, query: Object, opti
         let response = await col.findOne(query, options)
         return response;
     } catch (err){
-        console.log("An error occured with finding a entry on MongoDB!")
+        console.log("An error occured with finding an entry on MongoDB!")
         console.log(err)
     }
 }

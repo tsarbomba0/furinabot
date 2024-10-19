@@ -5,8 +5,10 @@ import { modules, interaction_handler } from './handlers/command_handler';
 import track_websocket from './websocket/websocket';
 require('dotenv').config()
 import { MongoClient } from "mongodb"
+import { dbfind, upsort } from './util/mongodb_wrapper'
 import count_xp from './xp/xp_handler'
-import { count } from 'console';
+import { calculatedLevel } from './interfaces/calculatedLevel';
+
 
 
 // Discord.js client
@@ -37,6 +39,22 @@ client.lavalink = new LavalinkManager({
     },
 });
 
+// Event for new users
+client.on(Events.GuildMemberAdd, async (member) => {
+    let proj = {}
+    proj['_id'] = 0
+    proj[member.id] = 1
+    let result = await dbfind('exp', client.mongodb, { guildid: member.guildId }, { projection: proj })
+
+    let data: calculatedLevel
+    if(Object.keys(result).length === 0){
+        data[member.id] = {
+            xp: 0,
+            level: 0
+        }
+        upsort('exp', client.mongodb, { guildid: member.guild.id }, data)
+    }
+})
 // Event for handling raw WebSocket events
 client.on("raw", (data: any) => {
     client.lavalink.sendRawData(data); // Passing raw data to lavalink-client   for handling

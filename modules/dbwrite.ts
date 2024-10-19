@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb'
-import { upsort } from '../util/mongodb'
+import { upsort } from '../util/mongodb_wrapper'
 import { SlashCommandBuilder } from 'discord.js'
 import fs from 'node:fs';
 

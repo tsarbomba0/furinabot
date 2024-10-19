@@ -1,7 +1,7 @@
 import { Events } from 'discord.js'
-import { dbfind, upsort } from '../util/mongodb';
+import { dbfind, upsort } from '../util/mongodb_wrapper';
 import { xpcalc } from './xp_calc';
-
+import { calculatedLevel } from '../interfaces/calculatedLevel';
 // Variables
 let cooldownIds: Array<string> = [];
 let timeoutCreated = false;
@@ -12,7 +12,7 @@ const milisecondsCooldown = 20000;
 export default function count_xp(client){
     client.on(Events.MessageCreate, async (message) => {
         // if the message has no guildid, like a dm, exit
-        if(message.guildId === null){
+        if(message.guildId === null || message.member.id === client.user.id){
             return;
         } 
 
@@ -27,7 +27,7 @@ export default function count_xp(client){
 
         // if statement checks if cooldownId is present in the array
         if(!cooldownIds.includes(cooldownId)){
-            let data = {}; // Empty data object
+            let data: object = {}; 
 
             // Projection for MongoDB, only show field with <userId>
             let projection = { _id: 0 }
@@ -40,26 +40,29 @@ export default function count_xp(client){
             if(Object.keys(userData).length === 0){
                 // if there is no value for a userid/guild or both, insert a new one with level 0 and the base amount of xp
                 data[userId] = {
-                    xp: givenXP,
-                    level: 0
+                    level: 0,
+                    xp: 0
                 }
                 upsort('exp', client.mongodb, { guildid: guildId }, data)
             } else {
                 // Variables, levelObjectValues => object from userId 
                 let levelObjectValues: Object = Object.values(userData)[0]
-                let xpNumber = Number(Object.values(levelObjectValues)[0]) // first property of the object
-                let level = Number(Object.values(levelObjectValues)[1]) // second property ^
-                let newXp = xpNumber+givenXP // current XP + the XP value added 
-                
-                // data object to upsert into MongoDB 
+                console.log(levelObjectValues)
+                let xpNumber = Number(Object.values(levelObjectValues)[1]) // first property of the object
+                let level = Number(Object.values(levelObjectValues)[0]) // second property ^
+                console.log(xpNumber)
+                console.log(level)
+                let newXp = xpNumber+givenXP
+                // data object to upsert into MongoDB
+                let lvl = xpcalc(newXp, level) 
+                console.log(lvl)
                 data[userId] = {
-                    xp: xpNumber+givenXP, 
-                    level: xpcalc(newXp, level) //xpcalc calculates if the user has gotten a level up or not, returns new level or the same one.
-                }
-                
+                    level: lvl.level,
+                    xp: lvl.xp
+                } 
+                console.log(data)
                 // Upsort
                 upsort('exp', client.mongodb, { guildid: guildId }, data)
-                
             }
 
  

@@ -1,13 +1,13 @@
+import { calculatedLevel } from '../interfaces/calculatedLevel'
 let expectedXp: number;
-let overflow: number;
 
-export function xpcalc(xp: number, level: number){
-    // xp = formula = (current level+1)^2 + 100
-    expectedXp = (level+1)^2 + 100
-    if(xp>=expectedXp){
-        overflow = xp - expectedXp
-        return level+1
-    } else {
-        return level
+
+export function xpcalc(xp: number, level: number): calculatedLevel {
+    // xp = formula = ((current level+1)^2 + 100)*10
+    expectedXp = ((level+1)**2 + 100)*10
+    let calc: calculatedLevel = {
+        level: xp >= expectedXp ? level+1 : level,
+        xp: xp >= expectedXp ? xp - expectedXp : xp
     }
+    return calc
 }
