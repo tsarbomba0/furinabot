@@ -33,19 +33,22 @@ if the user is a owner it allows them to execute commands regardless.
 dbwrite command usage:
 `/dbwrite <commandName> <roles>`
 Example:
-`/dbwrite yuri Admin,Moderator`
+`/dbwrite hw Admin,Moderator` 
+
+The system is incredibly strict which allows for very tight control of who can execute what, because of permissions being tied to role ids, not role permissions.
 
 ## XP
 The bot possesses a XP system with a cooldown of (by default) 20 seconds (can be changed)
 Awards a user 25 xp per written message
-Formula for the levels is `(currentLevel+1)^2 + 100`
+Formula for the levels is `10((currentLevel+1)^2 + 100)`
 
-The levels are stored using MongoDB using the 'format':
+The levels are stored using MongoDB using this format:
+
 ```
 <guildid>
 <playerid1>:
-    xp: <xpNumber>
     level: <levelNumber>
+    xp: <xpNumber>
 <playerid2>
     ... etc.
 ```
