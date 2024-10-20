@@ -1,7 +1,7 @@
 import config from '../config.json'
 import { ColorResolvable, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('stop')
     .setDescription('Stops the player!'),

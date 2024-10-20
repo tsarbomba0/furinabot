@@ -1,7 +1,7 @@
 import config from '../config.json';
 import { SlashCommandBuilder, EmbedBuilder, Embed, ColorResolvable } from 'discord.js';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('shuffle')
     .setDescription('Shuffles the queue'),

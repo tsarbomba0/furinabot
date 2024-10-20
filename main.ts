@@ -1,50 +1,49 @@
-import config from './config.json';
-import { Client, Events, ActivityType, GatewayIntentBits, PresenceUpdateStatus } from 'discord.js';
+import { Events, ActivityType, GatewayIntentBits, PresenceUpdateStatus } from 'discord.js';
 import { GuildShardPayload, LavalinkManager } from "lavalink-client";
 import { modules, interaction_handler } from './handlers/command_handler';
-import track_websocket from './websocket/websocket';
-require('dotenv').config()
-import { MongoClient } from "mongodb"
 import { dbfind, upsort } from './util/mongodb_wrapper'
-import count_xp from './xp/xp_handler'
 import { calculatedLevel } from './interfaces/calculatedLevel';
 
 
+require('dotenv').config()
+const mongodb_uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@cluster0.9ph1h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+import discordClient from './classes/DiscordClient';
+import count_xp from './xp/xp_handler'
+import track_websocket from './websocket/websocket';
+import config from './config.json';
 
-// Discord.js client
-export const client = new Client({ intents: [GatewayIntentBits.Guilds,
+
+
+// Discord.js client (discordClient is a extension of Client)
+export const client = new discordClient({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
-]}) as any
+], uri: mongodb_uri}) as discordClient
 
-// MongoDB uri and client
-const mongodb_uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWD}@cluster0.9ph1h.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-client.mongodb = new MongoClient(mongodb_uri);
-
-// Lavalink Manager
 client.lavalink = new LavalinkManager({
     nodes: [{
-        id: "node_1",
-        host: "node.lewdhutao.my.eu.org",
-        port: 80,
-        authorization: "youshallnotpass",
+        id: "Node",
+        host: "localhost",
+        port: 8090,
+        authorization: "lavalinkv4",
+        retryAmount: 5,
     }],
     sendToShard: (guildId: string, payload: GuildShardPayload) => client.guilds.cache.get(guildId)?.shard?.send(payload),
     autoSkip: true,
     client: {
         id: config.clientid,
-        username: "furina",
+        username: "Furina",
     },
-});
+})
 
 // Event for new users
 client.on(Events.GuildMemberAdd, async (member) => {
     let proj = {}
     proj['_id'] = 0
     proj[member.id] = 1
-    let result = await dbfind('exp', client.mongodb, { guildid: member.guildId }, { projection: proj })
+    let result = await dbfind('exp', client.mongodb, { guildid: member.guild.id }, { projection: proj })
 
     let data: calculatedLevel
     if(Object.keys(result).length === 0){
@@ -62,8 +61,11 @@ client.on("raw", (data: any) => {
 
 // Once ready
 client.once(Events.ClientReady, (cl: any) => {
-    client.lavalink.init(client.user);
-    // Client presence
+    client.lavalink.init({
+        id: cl.user.id,
+        username: cl.user.username
+    });
+    // Client  presence
     client.user.setPresence({ activities: [{ name: "Ei & Yae Miko in bedsheets", type: ActivityType.Watching }], status: PresenceUpdateStatus.Online })
     console.log("(discord) Focalors onlyfans service is up")
 })

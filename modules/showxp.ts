@@ -3,7 +3,7 @@ import config from '../config.json'
 import { SlashCommandBuilder, EmbedBuilder, GuildMember, Embed, ColorResolvable, Collection } from 'discord.js'
 import { Experience } from '../interfaces/exp'
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName("showxp")
     .setDescription("Show someone's xp or yours (if you provide no input)")

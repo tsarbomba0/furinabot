@@ -1,12 +1,12 @@
-import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ColorResolvable } from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ColorResolvable, Attachment, AttachmentData, ChatInputCommandInteraction } from "discord.js";
 import config from '../config.json';
-import { SearchQuery, SearchResult, Track } from "lavalink-client/dist/types";
+import { Player, SearchPlatform, SearchQuery, SearchResult, Track, UnresolvedSearchResult } from "lavalink-client/dist/types";
 const { RegexList } = require('../types/platforms');
 let title: string;
 let artworkurl: string;
-let platform = "ytsearch";
+let platform: SearchPlatform = "ytsearch";
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
         .setName('play')
         .setDescription('Play music!')
@@ -43,7 +43,7 @@ module.exports = {
         }
 
         // Creating a player
-        const player = interaction.client.lavalink.createPlayer({
+        const player: Player = interaction.client.lavalink.createPlayer({
             guildId: interaction.guild.id,
             voiceChannelId: interaction.member.voice.channel.id,
             textChannelId: interaction.channel.id,
@@ -55,7 +55,7 @@ module.exports = {
         player.connect();
 
         // Response and switch case for tracks
-        let res: SearchResult;
+        let res: SearchResult | UnresolvedSearchResult;
         
         
         try {
@@ -97,9 +97,9 @@ module.exports = {
         }
 
         // Attachment and filenames
-        const file = `./img/music_players/${platform.replace("search", '')}50.png`
-        const filename = `${platform.replace("search", '')}50.png`
-        const attachment = new AttachmentBuilder(file)
+        const file: string = `./img/music_players/${platform.replace("search", '')}50.png`
+        const filename: string = `${platform.replace("search", '')}50.png`
+        const attachment: AttachmentData = new AttachmentBuilder(file)
 
         // Embed
         try { 

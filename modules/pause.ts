@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js";
 import config from '../config.json';
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('pause')
     .setDescription('Pauses or unpauses the bot'),

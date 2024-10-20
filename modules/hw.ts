@@ -4,7 +4,7 @@ const config = require('../config.json')
 const axios = require('axios');
 const cheerio = require('cheerio')
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName('hw')
     .setDescription('Homework.')

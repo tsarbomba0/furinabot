@@ -1,32 +1,15 @@
 {
   "name": "furinabot",
-  "version": "1.0.0",
-  "description": "Music bot for Discord",
-  "main": "main.ts",
-  "scripts": {
-    "build": "npm i discord.js ts-node cheerio axios lavalink-client dotenv ws mongodb",
-    "run": "ts-node main.ts"
+  "module": "main.ts",
+
+  "devDependencies": {
+    "@types/bun": "latest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tsarbomba0/furinabot.git"
+  "peerDependencies": {
+    "typescript": "^5.6.3"
   },
-  "keywords": [
-    "discord",
-    "music",
-    "bot",
-    "discordjs",
-    "discordbot",
-    "typescript"
-  ],
-  "author": "Tsar Bomba",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tsarbomba0/furinabot/issues"
-  },
-  "homepage": "https://github.com/tsarbomba0/furinabot#readme",
   "dependencies": {
-    "mongoclient": "^1.0.3",
+    "lavalink-client": "2.4.0",
     "mongodb": "^6.9.0"
   }
 }

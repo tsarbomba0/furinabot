@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder, ColorResolvable } from "discord.js"
 import config from '../config.json'
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName("repeat")
     .setDescription("Repeats the current track or queue")

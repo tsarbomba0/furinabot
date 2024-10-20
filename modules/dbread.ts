@@ -1,8 +1,8 @@
-import { SlashCommandBuilder, EmbedBuilder, Embed, ColorResolvable } from "discord.js";
-import { dbfind } from '../util/mongodb_wrapper'
-const config = require('../config.json')
+import { SlashCommandBuilder, EmbedBuilder, ColorResolvable} from "discord.js";
+import { dbfind } from '../util/mongodb_wrapper';
+import config from '../config.json';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName("dbread")
     .setDescription("Reads roles allowed for a command")

@@ -3,7 +3,7 @@ import { upsort } from '../util/mongodb_wrapper'
 import { SlashCommandBuilder } from 'discord.js'
 import fs from 'node:fs';
 
-module.exports = {
+export default {
     data: new SlashCommandBuilder()
     .setName("dbwrite")
     .setDescription("write to database")
@@ -70,11 +70,9 @@ module.exports = {
             
         })
         .catch(err => console.log(err))
+        
         // reply
         await interaction.editReply({ content: `Done! Set permissions for /${command}`, ephemeral: true}) 
-        
-            
-
         
     }
 }

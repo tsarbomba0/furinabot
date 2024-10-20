@@ -1,4 +1,4 @@
-import { MongoClient, WithId } from "mongodb";
+import { MongoClient } from "mongodb";
 // Read from MongoDB
 export async function dbread(coll: string, mongoclient: MongoClient, query: object): Promise<object> {
     try {
@@ -46,10 +46,9 @@ export async function dbclear(coll: string, mongoclient: MongoClient, query: obj
 // Find 
 export async function dbfind(coll: string, mongoclient: MongoClient, query: object, options: object): Promise<object> {
     try {
-        await mongoclient.connect();
         let database = mongoclient.db('furina_bot_data')
         let col = database.collection(coll)  
-        let response = await col.findOne(query, options)
+        let response = col.findOne(query, options)
         return response;
     } catch (err){
         console.log("An error occured with finding an entry on MongoDB!")
