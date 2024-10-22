@@ -45,15 +45,16 @@ export async function dbclear(coll: string, mongoclient: MongoClient, query: obj
 
 // Find 
 export async function dbfind(coll: string, mongoclient: MongoClient, query: object, options: object): Promise<object> {
-    try {
-        let database = mongoclient.db('furina_bot_data')
-        let col = database.collection(coll)  
-        let response = col.findOne(query, options)
-        return response;
-    } catch (err){
-        console.log("An error occured with finding an entry on MongoDB!")
-        console.log(err)
-    }
+    await mongoclient.db("furina_bot_data").command({ ping: 1 });
+    return new Promise((res,rej) => {
+        let resolve: Promise<object>;
+        try {
+            resolve = mongoclient.db('furina_bot_data').collection(coll).findOne(query, options)
+            res(resolve)
+        } catch {
+            return rej("There was an error with finding the query in MongoDB")
+        }
+    })
 }
 
 

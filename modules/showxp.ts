@@ -44,12 +44,16 @@ export default {
         let proj = { _id: 0 }
         proj[userId] = 1
 
-        let xpEntry = await dbfind('exp', interaction.client.mongodb, query, {sort: {}, projection: proj})
+        dbfind('exp', interaction.client.mongodb, query, {sort: {}, projection: proj})
+        .then(response => console.log(response))
+        //console.log(xpEntry)
+        /*
         if(xpEntry === null){
             await interaction.editReply({ content: "This user has no XP data yet!", ephemeral: true})
             return;
         }
-
+        */
+        /*
         let xpObject = Object.values(xpEntry)[0]
 
         let exp: Experience = {
@@ -65,6 +69,6 @@ export default {
             .setColor(config.embed_color as ColorResolvable)
             .setThumbnail(`https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.jpeg?size=64x64`)
         ]})
-        
+        */
     }
 }

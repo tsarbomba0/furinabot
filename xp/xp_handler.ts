@@ -48,18 +48,12 @@ export default function count_xp(client){
                 // Variables, levelObjectValues => object from userId 
                 let levelObjectValues: Object = Object.values(userData)[0]
                 console.log(levelObjectValues)
-                let xpNumber = Number(Object.values(levelObjectValues)[1]) // first property of the object
-                let level = Number(Object.values(levelObjectValues)[0]) // second property ^
-                console.log(xpNumber)
-                console.log(level)
-                let newXp = xpNumber+givenXP
+                 
+                let level = Number(Object.values(levelObjectValues)[0]) // first property of the object
+                let xpNumber = Number(Object.values(levelObjectValues)[1]) // second property ^
+                
                 // data object to upsert into MongoDB
-                let lvl = xpcalc(newXp, level) 
-                console.log(lvl)
-                data[userId] = {
-                    level: lvl.level,
-                    xp: lvl.xp
-                } 
+                data[userId] = xpcalc(xpNumber+givenXP, level)
                 console.log(data)
                 // Upsort
                 upsort('exp', client.mongodb, { guildid: guildId }, data)

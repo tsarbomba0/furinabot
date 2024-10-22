@@ -11,7 +11,7 @@ plugins:
     allowDirectPlaylistIds: true
     oauth:
       enabled: true
-      refreshToken: ''
+      refreshToken: '1//09X92T0erUecRCgYIARAAGAkSNwF-L9IrPAbaPiDxXm2vAnSYmd0Nr-OzLivqxCY7u4MWRaUHQhNJ_bjo6F46-ffyQr4BKTZbSds'
    lavasrc:
     providers: # Custom providers for track loading. This is the default
       # - "dzisrc:%ISRC%" # Deezer ISRC provider

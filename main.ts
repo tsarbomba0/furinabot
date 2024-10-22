@@ -11,6 +11,7 @@ import discordClient from './classes/DiscordClient';
 import count_xp from './xp/xp_handler'
 import track_websocket from './websocket/websocket';
 import config from './config.json';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 
 
@@ -20,7 +21,15 @@ export const client = new discordClient({ intents: [GatewayIntentBits.Guilds,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildVoiceStates
-], uri: mongodb_uri}) as discordClient
+]}) as discordClient
+
+client.mongodb = new MongoClient(mongodb_uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+})
 
 client.lavalink = new LavalinkManager({
     nodes: [{
@@ -28,7 +37,6 @@ client.lavalink = new LavalinkManager({
         host: "localhost",
         port: 8090,
         authorization: "lavalinkv4",
-        retryAmount: 5,
     }],
     sendToShard: (guildId: string, payload: GuildShardPayload) => client.guilds.cache.get(guildId)?.shard?.send(payload),
     autoSkip: true,
@@ -60,12 +68,12 @@ client.on("raw", (data: any) => {
 });
 
 // Once ready
-client.once(Events.ClientReady, (cl: any) => {
+client.once(Events.ClientReady, async (cl: any) => {
     client.lavalink.init({
         id: cl.user.id,
         username: cl.user.username
     });
-    // Client  presence
+    await client.mongodb.db("furina_bot_data").command({ ping: 1 })
     client.user.setPresence({ activities: [{ name: "Ei & Yae Miko in bedsheets", type: ActivityType.Watching }], status: PresenceUpdateStatus.Online })
     console.log("(discord) Focalors onlyfans service is up")
 })

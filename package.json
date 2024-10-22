@@ -1,7 +1,6 @@
 {
   "name": "furinabot",
   "module": "main.ts",
-
   "devDependencies": {
     "@types/bun": "latest"
   },
@@ -9,7 +8,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
-    "lavalink-client": "2.4.0",
-    "mongodb": "^6.9.0"
+    "lavalink-client": "2.3.6",
+    "mongodb": "6.5.0"
   }
 }
