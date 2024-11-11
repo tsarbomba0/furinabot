@@ -41,13 +41,8 @@ export default {
         // Fetch tags for character, one with the highest count gets taken
         let response;
         let data;
-        try {
-            response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=tag&q=index&limit=25&json=1&name_pattern=${victim.replace(" ", "_")}%&order=count`)
-            data = await response.data
-        } catch (err){
-            interaction.editReply({ content: "Couldn't connect with the Rule34 API!"});
-            return;
-        }
+        response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=tag&q=index&limit=25&json=1&name_pattern=${victim.replace(" ", "_")}%&order=count`)
+        data = await response.data        
 
         // Parse XML using Cheerio 
         const parsed_xml = cheerio.load(data, {
@@ -57,26 +52,28 @@ export default {
             await interaction.editReply({ content: "Couldn't find that!" })
             return;
         }
+
+        let highestCount = 0;
+        let highestCountTag: string;
+
         parsed_xml('tags').get().map(async(arg) =>{
-            let highestCount = 0;
-            let highestCountTag: string;
             arg.children.forEach(element => {
                 if(element.attribs){
-                    if(element.attribs.count > highestCount){
+                    if(Number(element.attribs.count) > highestCount){
                         highestCount = element.attribs.count
                         highestCountTag = element.attribs.name
                     } 
                     
                 }
             })
-            response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${highestCountTag}${taglist}+-ai_generated+-video `) // maybe cache using hash?
-            
+            response = await axios.get(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=100&json=1&tags=${highestCountTag}${taglist}+-ai_generated+-video`) // maybe cache using hash?
             if(!response.data){
                 await interaction.editReply({ content: "Couldn't find that!" })
                 return;
             }
             // random post from array
             let random_post = response.data[Math.floor(response.data.length * Math.random())]
+            // if doesn't have file, roll again
             if(!random_post.file_url){
                 random_post = response.data[Math.floor(response.data.length * Math.random())]
             }

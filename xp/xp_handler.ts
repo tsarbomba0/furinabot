@@ -20,10 +20,10 @@ export default function count_xp(client){
         let userId = message.member.id
         let guildId: string;
 
-        // get guildId, and create a 'cooldown id' (combined userId and guildId
+        // get guildId, and create a 'cooldown id' (combined userId and guildId)
         guildId = message.guildId
         let cooldownId = userId.concat(guildId)
-        console.log(cooldownIds)
+        console.log("Cooldown IDs: ", cooldownIds)
 
         // if statement checks if cooldownId is present in the array
         if(!cooldownIds.includes(cooldownId)){
@@ -32,6 +32,9 @@ export default function count_xp(client){
             // Projection for MongoDB, only show field with <userId>
             let projection = { _id: 0 }
             projection[userId] = 1
+
+            // Put to array
+            cooldownIds.push(cooldownId)
 
             // Current
             let userData: Object = await dbfind('exp', client.mongodb, { guildid: guildId }, {projection})
@@ -62,12 +65,11 @@ export default function count_xp(client){
                 } 
                 console.log(data)
                 // Upsort
-                upsort('exp', client.mongodb, { guildid: guildId }, data)
+                //upsort('exp', client.mongodb, { guildid: guildId }, data)
+                
             }
 
- 
-            // if not it pushes it to the array
-            cooldownIds.push(cooldownId)
+
             // checks if a setTimeout was already triggered and if the timeout has the same id as the cooldown
             if(timeoutCreated && timeoutCooldownId == cooldownId){
                 console.log("timeout already exists!")
